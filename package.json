@@ -24,6 +24,8 @@
     "@vitest/ui": "^4.0.13",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
+    "flush-promises": "^1.0.2",
+    "jsdom": "^27.2.0",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.13",

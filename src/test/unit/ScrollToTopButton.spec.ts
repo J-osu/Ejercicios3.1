@@ -8,7 +8,7 @@ const createWrapper = () => {
         // Globales necesarios si estás usando Bootstrap icons
         global: {
             stubs: {
-                'i': true 
+                //'i': true 
             }
         }
     });
