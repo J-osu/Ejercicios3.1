@@ -9,6 +9,11 @@ import UnsavedChangesForm from '../components/UnsavedChangesForm.vue';
 import InfinityScrollList from '../components/InfinityScrollList.vue';
 import DropDownMenu from '../components/DropDownMenu.vue';
 import FullscreenWrapper from '../components/FullscreenWrapper.vue';
+import PopupWindowManager from '../components/PopupWindowManager.vue';
+import SearchFilter from '../components/SearchFilter.vue';
+import ProductPrice from '../components/ProductPrice.vue';
+import CountdownTimer from '../view/Countdown.vue';
+import CalendarView from '../view/CalendarView.vue';
 
 export const routes = [
   {
@@ -69,6 +74,32 @@ export const routes = [
   path: '/formulario',
   name: 'UnsavedChangedForm',
   component: UnsavedChangesForm
+  },
+  {
+    path: '/popup',
+    name: 'PopupWindow',
+    component: PopupWindowManager
+  },
+  {
+    path:'/search',
+    name: 'search',
+    component: SearchFilter
+  },
+  {
+    path:'/products',
+    name: 'products',
+    component: ProductPrice
+  },
+  {
+    path: '/countdown',
+    name: 'countdown',
+    component: CountdownTimer
+  },
+  {
+    path: '/calendario',
+    name: 'calendario',
+    component: CalendarView
   }
+
 
 ];

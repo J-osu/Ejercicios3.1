@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Página de Práctica DOM</title>
+</head>
+<body>
+    <h1>Título Principal (H1)</h1>
+    <p id="parrafo1">Este es el primer párrafo de prueba. Tiene varias palabras que vamos a modificar.</p>
+    <p id="parrafo2">Segundo párrafo para practicar el conteo de palabras. Es corto, pero funcional.</p>
+    <p id="parrafo3">Similique dignissimos reiciendis tempore numquam blanditiis nihil corrupti. Voluptatem explicabo quia dolor aspernatur consequatur. Soluta velit minima voluptatem modi et nulla nihil. Tempora omnis sint est et. Cupiditate in saepe voluptatibus non quis velit.</p>
+    <div id="elemento-concreto">Soy un elemento DIV con un ID específico.</div>
+
+    <a id="enlace1" href="https://ejemplo.com/enlace1">Primer Enlace de Prueba</a><br>
+    <a id="enlace2" href="https://ejemplo.com/enlace2">Segundo Enlace</a><br>
+    
+    <img src="kiryu.jpg" alt="Imagen de prueba">
+    
+    <ul>
+        <li>Elemento de Lista 1</li>
+        <li>Elemento de Lista 2</li>
+    </ul>
+
+    <script>
+        //1. Modifica el titulo de la pagina
+        document.title = "Modificacion";
+        console.log(document.title)
+
+        //2.Muestra el texto del elemento H1
+        const h1 = document.querySelector('h1')
+        console.log(h1.textContent)
+
+        //3.Modifica el contenido de un parrafo
+        const parrafo1 = document.getElementById('parrafo1')
+        parrafo1.textContent = "Modificacion"
+
+        //4.Modifica el contenido de un elemento concreto
+        const parrafo2 = document.getElementById('parrafo2')
+        parrafo2.textContent = "Ejercicio 4"
+
+        //5.Di cuantos enlaces tiene la pagina
+        const enlaces = document.querySelectorAll('a')
+        console.log(enlaces.length)
+
+        //6.Modifica uno de los enlaces de la pagina
+        const enlacemodificar = document.getElementById('enlace1')
+        enlacemodificar.href = 'https://www.google.com'
+
+        //7.Cambia una de las imagenes de la pagina
+        const imagen = document.querySelector('img')
+        imagen.src = 'beck.jpg'
+
+        //8.Cambia el color del texto de un elemento concreto
+        const parrafocolor = document.getElementById('parrafo2')
+        parrafo2.style.color = 'blue'
+
+        //9.Añade una regla css a uno de los elementos via atributo style
+        const listacss = document.querySelector('ul')
+        listacss.style.backgroundColor = ('green')
+
+        //10. Di cuantas palabra hay en un párrafo concreto
+        const contarpalabras = document.getElementById('parrafo3')
+        const palabras = contarpalabras.textContent.trim();
+        const numero = palabras.split(/\s+/)
+        console.log(numero.length)
+    </script>
+</body>
+</html> 
