@@ -64,6 +64,11 @@ export const routes = [
   path: '/fullscreenwrapper',
   name: 'FullScreenWrapper',
   component: FullscreenWrapper
-}
+},
+{
+  path: '/formulario',
+  name: 'UnsavedChangedForm',
+  component: UnsavedChangesForm
+  }
 
 ];
