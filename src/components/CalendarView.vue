@@ -3,9 +3,6 @@ import { computed } from 'vue';
 import { isSameDay } from '../utils/dateUtils'; // Importar el helper
 import { type CalendarEvent, type CalendarDay } from '../types'; // Importar las interfaces
 
-// ---------------------------------------------
-// 1. PROPS
-// ---------------------------------------------
 const props = defineProps<{
     year: number;
     month: number; // 0-11
@@ -15,25 +12,11 @@ const props = defineProps<{
 // Días de la semana para la cabecera
 const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-// ---------------------------------------------
-// 2. LÓGICA PRINCIPAL: calendarGrid (Propiedad computed)
-// ---------------------------------------------
-
 const calendarGrid = computed<CalendarDay[]>(() => {
     const grid: CalendarDay[] = [];
-
-    // --- 2.1 Determinar inicio y fin del mes ---
-    
-    // El primer día del mes dado (ej: 1 de octubre de 2025)
     const firstDayOfMonth = new Date(props.year, props.month, 1); 
-    // El último día del mes dado (Día 0 del mes siguiente es el último día del mes actual)
     const daysInMonth = new Date(props.year, props.month + 1, 0).getDate();
 
-    // --- 2.2 Días de Relleno al Inicio (Mes Anterior) ---
-    
-    // Obtiene el índice del día de la semana (0=Domingo, 6=Sábado).
-    // Usamos el módulo 7 para que Lunes sea 0 y Domingo sea 6.
-    // En JS, getDay() devuelve 0 (Dom) a 6 (Sáb). La fórmula (d+6)%7 mapea Lunes a 0.
     const firstDayOfWeekIndex = (firstDayOfMonth.getDay() + 6) % 7; 
 
     // Calcula cuántos días de relleno del mes anterior necesitamos
@@ -172,7 +155,7 @@ h2 {
 /* Celda de Día */
 .day-cell {
     border: 1px solid #eee;
-    min-height: 100px; /* Suficiente espacio para eventos */
+    min-height: 100px;
     padding: 5px;
     background-color: #fff;
     position: relative;
@@ -213,14 +196,13 @@ h2 {
     cursor: help;
 }
 
-/* Estilos por Tipo de Evento */
 .event-busy {
-    background-color: #dc3545; /* Rojo */
+    background-color: #dc3545;
 }
 .event-tentative {
-    background-color: #ffc107; /* Amarillo/Naranja */
+    background-color: #ffc107;
 }
 .event-holiday {
-    background-color: #17a2b8; /* Azul Claro */
+    background-color: #17a2b8;
 }
 </style>

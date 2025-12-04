@@ -4,27 +4,25 @@ export function usePokemonFetcher() {
   const pokemons = ref<any[]>([])
   const isLoading = ref(false)
 
-  let offset = 0
-  const limit = 20
+  let desplazamiento = 0
+  const limite = 20
 
-  const loadMorePokemons = async () => {
+  const cargarMasPokemones = async () => {
     if (isLoading.value) return
     isLoading.value = true
 
     try {
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
+      const respuesta = await fetch(
+        `https://pokeapi.co/api/v2/pokemon?offset=${desplazamiento}&limit=${limite}`
       )
 
-      const data = await response.json()
+      const datos = await respuesta.json()
 
-      pokemons.value.push(...data.results)
+      pokemons.value.push(...datos.results)
 
-      // Actualizamos el offset para la siguiente carga
-      offset += limit
+      desplazamiento += limite
 
     } catch (error) {
-      console.error('Error en loadMorePokemons:', error)
     } finally {
       isLoading.value = false
     }
@@ -32,6 +30,6 @@ export function usePokemonFetcher() {
   return {
     pokemons,
     isLoading,
-    loadMorePokemons,
+    cargarMasPokemones,
   }
 }

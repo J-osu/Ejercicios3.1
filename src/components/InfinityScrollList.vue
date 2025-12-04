@@ -1,10 +1,10 @@
 <template>
   <div
-    ref="scrollContainer"
+    ref="contenedorScroll"
     class="scroll-container"
     style="height: 500px; overflow-y: scroll; border: 1px solid #ccc; padding: 12px;"
   >
-    <!-- Lista de pokemons -->
+    
     <div
       v-for="(pokemon, index) in pokemons"
       :key="index"
@@ -14,7 +14,7 @@
       {{ pokemon.name }}
     </div>
 
-    <!-- Indicador de carga -->
+    
     <div
       v-if="isLoading"
       class="loading"
@@ -28,56 +28,51 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { usePokemonFetcher } from '../composables/usePokemonFetcher'
+import { usePokemonFetcher } from '../composables/usePokemonFetcher' 
 import { useScrollDetector } from '../composables/useScrollDetector'
 
-// 1. Usar el composable del fetcher
-const { pokemons, isLoading, loadMorePokemons } = usePokemonFetcher()
+const { pokemons, isLoading, cargarMasPokemones } = usePokemonFetcher()
+const paginaActual = ref(1)
+const contenedorScroll = ref<HTMLElement | null>(null)
 
-// 2. Página actual (ref)
-const currentPage = ref(1)
-
-// 3. Template ref del contenedor con scroll
-const scrollContainer = ref<HTMLElement | null>(null)
-
-// 4. Callback del scroll detector
-const handleScrollEnd = async () => {
-
-  // 1. Comprobar si ya está cargando
+const manejarFinScroll = async () => {
   if (isLoading.value) return
 
-  // 2. Incrementar la página
-  currentPage.value++
+  await cargarMasPokemones()
+  paginaActual.value++
 
-  // 3. Cargar más pokemons
-  await loadMorePokemons()
-
-  // 4. Actualizar la URL
   history.replaceState(
-    { page: currentPage.value },
+    { page: paginaActual.value },
     '',
-    `?page=${currentPage.value}`
+    `?page=${paginaActual.value}`
   )
 }
 
-// 5. Activar el detector de scroll
-useScrollDetector(scrollContainer, handleScrollEnd)
+useScrollDetector(contenedorScroll, manejarFinScroll)
 
-// 6. Cargar la primera página al montar
-onMounted(() => {
-  loadMorePokemons()
+onMounted(async () => {
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const paramPagina = urlParams.get('page')
+  let paginaObjetivo = 1
+
+  if (paramPagina) {
+    const numPagina = parseInt(paramPagina)
+    if (!isNaN(numPagina) && numPagina >= 1) {
+      paginaObjetivo = numPagina
+      paginaActual.value = numPagina
+    }
+  }
+
+  for (let i = 1; i <= paginaObjetivo; i++) {
+    await cargarMasPokemones()
+  }
+
+  setTimeout(async () => {
+    const el = contenedorScroll.value
+    if (el && el.scrollHeight <= el.clientHeight + 100) {
+      await manejarFinScroll()
+    }
+  }, 0)
 })
 </script>
-
-<style scoped>
-.pokemon-item {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-}
-
-.loading {
-  text-align: center;
-  padding: 10px;
-  color: #666;
-}
-</style>

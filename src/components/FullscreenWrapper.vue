@@ -1,11 +1,9 @@
 <template>
-  <div ref="wrapperRef" style="position: relative; display: inline-block; width: 100%;">
-    <!-- Slot para cualquier contenido -->
+  <div ref="referenciaContenedor" style="position: relative; display: inline-block; width: 100%;">
     <slot></slot>
     
-    <!-- Botón de pantalla completa -->
     <button
-      @click="toggleFullscreen"
+      @click="alternarPantallaCompleta"
       style="
         position: absolute;
         top: 10px;
@@ -19,7 +17,7 @@
         z-index: 1000;
       "
     >
-      {{ isFullscreen ? 'Salir de Pantalla Completa' : 'Entrar a Pantalla Completa' }}
+      {{ esPantallaCompleta ? 'Salir de Pantalla Completa' : 'Entrar a Pantalla Completa' }}
     </button>
   </div>
 </template>
@@ -27,40 +25,36 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, defineExpose, type Ref } from 'vue'
 
-// Refs internos
-const wrapperRef = ref<HTMLElement | null>(null)
-const isFullscreen: Ref<boolean> = ref(false)
+const referenciaContenedor = ref<HTMLElement | null>(null)
+const esPantallaCompleta: Ref<boolean> = ref(false)
 
-// Exponer los refs para tests
-defineExpose<{ wrapperRef: Ref<HTMLElement | null>, isFullscreen: Ref<boolean> }>({
-  wrapperRef,
-  isFullscreen
+defineExpose<{ referenciaContenedor: Ref<HTMLElement | null>, esPantallaCompleta: Ref<boolean> }>({
+  referenciaContenedor,
+  esPantallaCompleta
 })
 
-// Función para alternar fullscreen
-const toggleFullscreen = async () => {
-  if (!wrapperRef.value) return
+const alternarPantallaCompleta = async () => {
+  if (!referenciaContenedor.value) return
   try {
-    if (document.fullscreenElement === wrapperRef.value) {
+    if (document.fullscreenElement === referenciaContenedor.value) {
       await document.exitFullscreen()
     } else {
-      await wrapperRef.value.requestFullscreen()
+      await referenciaContenedor.value.requestFullscreen()
     }
   } catch (err) {
     console.error(err)
   }
 }
 
-// Actualizar estado al cambiar fullscreen
-const handleFullscreenChange = () => {
-  isFullscreen.value = document.fullscreenElement === wrapperRef.value
+const manejarCambioPantallaCompleta = () => {
+  esPantallaCompleta.value = document.fullscreenElement === referenciaContenedor.value
 }
 
 onMounted(() => {
-  document.addEventListener('fullscreenchange', handleFullscreenChange)
+  document.addEventListener('fullscreenchange', manejarCambioPantallaCompleta)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  document.removeEventListener('fullscreenchange', manejarCambioPantallaCompleta)
 })
 </script>

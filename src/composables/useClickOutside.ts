@@ -2,24 +2,23 @@ import { onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 
 export function useClickOutside(
-  element: Ref<HTMLElement | null>,
-  callback: (event: MouseEvent) => void
+  elemento: Ref<HTMLElement | null>,
+  callback: (evento: MouseEvent) => void
 ) {
-  const handleClick = (event: MouseEvent) => {
-    const el = element.value
+  const manejarClic = (evento: MouseEvent) => {
+    const el = elemento.value
     if (!el) return
 
-    // Si el clic NO está dentro del elemento, llamamos al callback
-    if (!el.contains(event.target as Node)) {
-      callback(event)
+    if (!el.contains(evento.target as Node)) {
+      callback(evento)
     }
   }
 
   onMounted(() => {
-    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('mousedown', manejarClic)
   })
 
   onUnmounted(() => {
-    document.removeEventListener('mousedown', handleClick)
+    document.removeEventListener('mousedown', manejarClic)
   })
 }
