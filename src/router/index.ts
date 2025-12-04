@@ -14,6 +14,8 @@ import SearchFilter from '../components/SearchFilter.vue';
 import ProductPrice from '../components/ProductPrice.vue';
 import CountdownTimer from '../view/Countdown.vue';
 import CalendarView from '../view/CalendarView.vue';
+import HistoryControls from '../components/HistoryControls.vue';
+import TabNavigator from '../components/TabNavigator.vue';
 import BrowserInfoTestView from '../view/BrowserInfoTestView.vue';
 import OnlineStatusTestView from '../view/OnlineStatusTestView.vue';
 
@@ -103,6 +105,16 @@ export const routes = [
     component: CalendarView
   },
   {
+    path: '/manejo',
+    name: 'manejo',
+    component: HistoryControls
+  },
+  {
+    path: '/tab',
+    name: 'tab',
+    component: TabNavigator
+  },
+  {
   path: '/browser-info-test',
   name: 'BrowserInfoTest',
   component: BrowserInfoTestView, 
@@ -111,7 +123,7 @@ export const routes = [
   path: '/online-status-test',
   name: 'OnlineStatusTest',
   component: OnlineStatusTestView, 
-},
+}
 
 
 ];

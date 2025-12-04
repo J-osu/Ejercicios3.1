@@ -33,19 +33,14 @@ const createCurrencyFormatter = () => {
         formatCurrency,
     };
 };
-// ----------------------------------------------------
-
-// 1. Define las props (Ahora son las props del subcomponente de demostración)
 const props = defineProps<{
     price: number;
     locale: string;
     currencyCode: string;
 }>();
 
-// 2. Llama a la función de formateo interna
 const { formatCurrency } = createCurrencyFormatter();
 
-// 3. Crea una propiedad computed para el precio formateado
 const formattedPrice = computed(() => {
     return formatCurrency(props.price, props.locale, props.currencyCode);
 });
@@ -86,7 +81,6 @@ const currencyExamples = [
 </template>
 
 <style scoped>
-/* Estilos principales de la página de demostración */
 .product-price-demo-page {
     padding: 30px;
     max-width: 1000px;

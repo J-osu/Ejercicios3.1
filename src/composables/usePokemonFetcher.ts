@@ -4,9 +4,8 @@ export function usePokemonFetcher() {
   const pokemons = ref<any[]>([])
   const isLoading = ref(false)
 
-  // offset inicial
   let offset = 0
-  const limit = 20 // número estándar de la PokeAPI
+  const limit = 20
 
   const loadMorePokemons = async () => {
     if (isLoading.value) return
@@ -17,13 +16,8 @@ export function usePokemonFetcher() {
         `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
       )
 
-      if (!response.ok) {
-        throw new Error('Error al cargar pokemons')
-      }
-
       const data = await response.json()
 
-      // Añadimos los resultados al array reactivo
       pokemons.value.push(...data.results)
 
       // Actualizamos el offset para la siguiente carga
@@ -35,8 +29,6 @@ export function usePokemonFetcher() {
       isLoading.value = false
     }
   }
-
-  // Lo que expone el composable
   return {
     pokemons,
     isLoading,
