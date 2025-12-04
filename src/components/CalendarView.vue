@@ -22,44 +22,47 @@ const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 const calendarGrid = computed<CalendarDay[]>(() => {
     const grid: CalendarDay[] = [];
 
-    // --- 2.1 Determinar inicio y fin del mes ---
+    // --- 2.1 Determinar el primer día de la grilla ---
     
-    // El primer día del mes dado (ej: 1 de octubre de 2025)
+    // Objeto Date que representa el primer día del mes actual (ej: 1 de octubre de 2025).
     const firstDayOfMonth = new Date(props.year, props.month, 1); 
-    // El último día del mes dado (Día 0 del mes siguiente es el último día del mes actual)
+    // Obtenemos el número de días del mes actual.
     const daysInMonth = new Date(props.year, props.month + 1, 0).getDate();
 
+    // JS getDay() -> 0 (Dom), 1 (Lun), ..., 6 (Sáb). 
+    // Fórmula (d+6)%7 mapea Lun a 0 para que la semana empiece en Lunes.
+    const firstDayOfWeekIndex = (firstDayOfMonth.getDay() + 6) % 7; 
+    
     // --- 2.2 Días de Relleno al Inicio (Mes Anterior) ---
     
-    // Obtiene el índice del día de la semana (0=Domingo, 6=Sábado).
-    // Usamos el módulo 7 para que Lunes sea 0 y Domingo sea 6.
-    // En JS, getDay() devuelve 0 (Dom) a 6 (Sáb). La fórmula (d+6)%7 mapea Lunes a 0.
-    const firstDayOfWeekIndex = (firstDayOfMonth.getDay() + 6) % 7; 
-
-    // Calcula cuántos días de relleno del mes anterior necesitamos
+    // Calcula cuántos días del mes anterior son necesarios para que el Lunes sea la primera celda.
     const previousMonthDaysToFill = firstDayOfWeekIndex;
 
-    // Obtener el día de inicio para el relleno
-    const previousMonthLastDay = new Date(props.year, props.month, 0);
-    const startDay = previousMonthLastDay.getDate() - previousMonthDaysToFill + 1;
+    if (previousMonthDaysToFill > 0) {
+        // Encontramos el último día del mes anterior (Día 0 del mes actual).
+        const previousMonthLastDay = new Date(props.year, props.month, 0);
+        const lastDayNumber = previousMonthLastDay.getDate();
 
-    for (let i = 0; i < previousMonthDaysToFill; i++) {
-        const dayDate = new Date(props.year, props.month, startDay + i);
-        grid.push({
-            date: dayDate,
-            isCurrentMonth: false,
-            events: [], // Los eventos se asignarán más tarde si se desea mostrar días anteriores
-        });
+        // Iteramos desde el día que inicia el relleno hasta el final del mes anterior.
+        for (let i = previousMonthDaysToFill; i > 0; i--) {
+            // Creamos la fecha del mes anterior. La fecha de la celda es: (Último Día - i + 1).
+            const dayNumber = lastDayNumber - i + 1;
+            const dayDate = new Date(props.year, props.month - 1, dayNumber); // 💡 CORRECCIÓN CLAVE: Usar props.month - 1
+            
+            grid.push({
+                date: dayDate,
+                isCurrentMonth: false,
+                events: [],
+            });
+        }
     }
 
     // --- 2.3 Generar Días del Mes Actual y Asignar Eventos ---
     
-    // Primero, pre-procesamos los eventos para que la búsqueda sea más rápida (Opcional, pero bueno)
-    
     for (let i = 1; i <= daysInMonth; i++) {
         const dayDate = new Date(props.year, props.month, i);
         
-        // 🚨 Asignar Eventos: Encontrar eventos que coincidan con este día
+        // Asignar Eventos: Encontrar eventos que coincidan con este día (Optimización: Podríamos usar un mapa para eventos).
         const dayEvents = props.events.filter(event => isSameDay(event.date, dayDate));
 
         grid.push({
@@ -71,15 +74,15 @@ const calendarGrid = computed<CalendarDay[]>(() => {
 
     // --- 2.4 Días de Relleno al Final (Mes Siguiente) ---
     
-    // La cuadrícula debe tener 6 semanas (42 celdas) o 5 semanas (35 celdas).
-    const daysToFillAtEnd = 7 - (grid.length % 7);
+    // Calculamos los días restantes para llenar la última fila (o llegar a 6 semanas).
+    let daysToFillAtEnd = 7 - (grid.length % 7);
+    if (daysToFillAtEnd === 7 && grid.length > 0) {
+        daysToFillAtEnd = 0; // Si ya está completo (ej. 35 o 42 días), no rellenamos 7 más.
+    }
     
-    // Si la cuadrícula ya es múltiplo de 7 (ej: 35 o 42) y no queremos añadir más,
-    // o si el módulo es 0 pero solo tiene 5 semanas, podría necesitar 7 más para 6 semanas.
-    const finalFillCount = (daysToFillAtEnd === 7) ? 0 : daysToFillAtEnd;
-    
-    for (let i = 1; i <= finalFillCount; i++) {
-        const dayDate = new Date(props.year, props.month + 1, i);
+    for (let i = 1; i <= daysToFillAtEnd; i++) {
+        // 💡 CORRECCIÓN CLAVE: Crear la fecha del mes siguiente usando props.month + 1.
+        const dayDate = new Date(props.year, props.month + 1, i); 
         grid.push({
             date: dayDate,
             isCurrentMonth: false,
@@ -91,10 +94,12 @@ const calendarGrid = computed<CalendarDay[]>(() => {
 });
 
 // ---------------------------------------------
-// 3. MEJORA: Título del Mes
+// 3. MEJORA: Título del Mes (Aprovecha la propiedad computed)
 // ---------------------------------------------
 const monthTitle = computed(() => {
-    const date = new Date(props.year, props.month);
+    // La fecha debe ser el primer día del mes para obtener el nombre correcto.
+    const date = new Date(props.year, props.month); 
+    // toLocaleDateString es la forma más robusta de formatear fechas para la UX.
     return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 });
 
@@ -115,7 +120,7 @@ const monthTitle = computed(() => {
                 class="day-cell"
                 :class="{
                     'is-not-current-month': !day.isCurrentMonth,
-                    'is-today': isSameDay(day.date, new Date())
+                    'is-today': isSameDay(day.date, new Date()) // Comprobación de día actual
                 }"
             >
                 <div class="day-number">{{ day.date.getDate() }}</div>
