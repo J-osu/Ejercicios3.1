@@ -1,117 +1,105 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { isSameDay } from '../utils/dateUtils'; // Importar el helper
-import { type CalendarEvent, type CalendarDay } from '../types'; // Importar las interfaces
+import { isSameDay } from '../utils/dateUtils';
+import { type CalendarEvent, type CalendarDay } from '../types';
 
 const props = defineProps<{
     year: number;
-    month: number; // 0-11
+    month: number;
     events: CalendarEvent[];
 }>();
 
-// Días de la semana para la cabecera
-const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const diasDeLaSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-const calendarGrid = computed<CalendarDay[]>(() => {
-    const grid: CalendarDay[] = [];
-    const firstDayOfMonth = new Date(props.year, props.month, 1); 
-    const daysInMonth = new Date(props.year, props.month + 1, 0).getDate();
+const cuadrillaCalendario = computed<CalendarDay[]>(() => {
+    const cuadrilla: CalendarDay[] = [];
+    const primerDiaDelMes = new Date(props.year, props.month, 1);
+    const diasEnElMes = new Date(props.year, props.month + 1, 0).getDate();
 
-    const firstDayOfWeekIndex = (firstDayOfMonth.getDay() + 6) % 7; 
+    // Determina el índice del primer día de la semana (Lunes=0, Domingo=6)
+    const indicePrimerDiaDeSemana = (primerDiaDelMes.getDay() + 6) % 7;
 
-    // Calcula cuántos días de relleno del mes anterior necesitamos
-    const previousMonthDaysToFill = firstDayOfWeekIndex;
+    const diasMesAnteriorARellenar = indicePrimerDiaDeSemana;
 
-    // Obtener el día de inicio para el relleno
-    const previousMonthLastDay = new Date(props.year, props.month, 0);
-    const startDay = previousMonthLastDay.getDate() - previousMonthDaysToFill + 1;
+    // Obtener el día de inicio para el relleno del mes anterior
+    const ultimoDiaMesAnterior = new Date(props.year, props.month, 0);
+    const diaInicio = ultimoDiaMesAnterior.getDate() - diasMesAnteriorARellenar + 1;
 
-    for (let i = 0; i < previousMonthDaysToFill; i++) {
-        const dayDate = new Date(props.year, props.month, startDay + i);
-        grid.push({
-            date: dayDate,
-            isCurrentMonth: false,
-            events: [], // Los eventos se asignarán más tarde si se desea mostrar días anteriores
-        });
-    }
-
-    // --- 2.3 Generar Días del Mes Actual y Asignar Eventos ---
-    
-    // Primero, pre-procesamos los eventos para que la búsqueda sea más rápida (Opcional, pero bueno)
-    
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayDate = new Date(props.year, props.month, i);
-        
-        // 🚨 Asignar Eventos: Encontrar eventos que coincidan con este día
-        const dayEvents = props.events.filter(event => isSameDay(event.date, dayDate));
-
-        grid.push({
-            date: dayDate,
-            isCurrentMonth: true,
-            events: dayEvents,
-        });
-    }
-
-    // --- 2.4 Días de Relleno al Final (Mes Siguiente) ---
-    
-    // La cuadrícula debe tener 6 semanas (42 celdas) o 5 semanas (35 celdas).
-    const daysToFillAtEnd = 7 - (grid.length % 7);
-    
-    // Si la cuadrícula ya es múltiplo de 7 (ej: 35 o 42) y no queremos añadir más,
-    // o si el módulo es 0 pero solo tiene 5 semanas, podría necesitar 7 más para 6 semanas.
-    const finalFillCount = (daysToFillAtEnd === 7) ? 0 : daysToFillAtEnd;
-    
-    for (let i = 1; i <= finalFillCount; i++) {
-        const dayDate = new Date(props.year, props.month + 1, i);
-        grid.push({
-            date: dayDate,
+    // Relleno con días del mes anterior
+    for (let i = 0; i < diasMesAnteriorARellenar; i++) {
+        const fechaDia = new Date(props.year, props.month, diaInicio + i);
+        cuadrilla.push({
+            date: fechaDia,
             isCurrentMonth: false,
             events: [],
         });
     }
 
-    return grid;
+    // Días del mes actual
+    for (let i = 1; i <= diasEnElMes; i++) {
+        const fechaDia = new Date(props.year, props.month, i);
+        
+        const eventosDia = props.events.filter(evento => isSameDay(evento.date, fechaDia));
+
+        cuadrilla.push({
+            date: fechaDia,
+            isCurrentMonth: true,
+            events: eventosDia,
+        });
+    }
+
+    // Relleno con días del mes siguiente
+    const diasParaRellenarAlFinal = 7 - (cuadrilla.length % 7);
+    const cuentaRellenoFinal = (diasParaRellenarAlFinal === 7) ? 0 : diasParaRellenarAlFinal;
+    
+    for (let i = 1; i <= cuentaRellenoFinal; i++) {
+        const fechaDia = new Date(props.year, props.month + 1, i);
+        cuadrilla.push({
+            date: fechaDia,
+            isCurrentMonth: false,
+            events: [],
+        });
+    }
+
+    return cuadrilla;
 });
 
-// ---------------------------------------------
-// 3. MEJORA: Título del Mes
-// ---------------------------------------------
-const monthTitle = computed(() => {
-    const date = new Date(props.year, props.month);
-    return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+const tituloMes = computed(() => {
+    const fecha = new Date(props.year, props.month);
+    return fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 });
 
 </script>
 
 <template>
     <div class="calendar-container">
-        <h2>{{ monthTitle }}</h2>
+        <h2>{{ tituloMes }}</h2>
 
         <div class="calendar-header">
-            <div v-for="day in daysOfWeek" :key="day" class="day-label">{{ day }}</div>
+            <div v-for="dia in diasDeLaSemana" :key="dia" class="day-label">{{ dia }}</div>
         </div>
 
         <div class="calendar-grid">
             <div 
-                v-for="day in calendarGrid" 
-                :key="day.date.toISOString()" 
+                v-for="dia in cuadrillaCalendario" 
+                :key="dia.date.toISOString()" 
                 class="day-cell"
                 :class="{
-                    'is-not-current-month': !day.isCurrentMonth,
-                    'is-today': isSameDay(day.date, new Date())
+                    'is-not-current-month': !dia.isCurrentMonth,
+                    'is-today': isSameDay(dia.date, new Date())
                 }"
             >
-                <div class="day-number">{{ day.date.getDate() }}</div>
+                <div class="day-number">{{ dia.date.getDate() }}</div>
 
                 <div class="events-list">
                     <div 
-                        v-for="event in day.events" 
-                        :key="event.title"
+                        v-for="evento in dia.events" 
+                        :key="evento.title"
                         class="event-item"
-                        :class="`event-${event.type}`"
-                        :title="event.title"
+                        :class="`event-${evento.type}`"
+                        :title="evento.title"
                     >
-                        {{ event.title }}
+                        {{ evento.title }}
                     </div>
                 </div>
             </div>
