@@ -1,0 +1,15 @@
+<template>
+  <div class="...">
+    <span v-if="isOnline">🟢 Conectado</span>
+    <span v-else>🔴 Sin conexión</span>
+  </div>
+  
+  <h4 :class="isOnline ? 'text-success' : 'text-danger'">Valor Bruto: {{ isOnline }}</h4> 
+</template>
+
+<script setup lang="ts">
+import { useOnlineStatus } from '../composables/useOnlineStatus';
+
+// Usar el composable para obtener el estado reactivo
+const { isOnline } = useOnlineStatus();
+</script>

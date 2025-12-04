@@ -14,6 +14,8 @@ import SearchFilter from '../components/SearchFilter.vue';
 import ProductPrice from '../components/ProductPrice.vue';
 import CountdownTimer from '../view/Countdown.vue';
 import CalendarView from '../view/CalendarView.vue';
+import BrowserInfoTestView from '../view/BrowserInfoTestView.vue';
+import OnlineStatusTestView from '../view/OnlineStatusTestView.vue';
 
 export const routes = [
   {
@@ -99,7 +101,17 @@ export const routes = [
     path: '/calendario',
     name: 'calendario',
     component: CalendarView
-  }
+  },
+  {
+  path: '/browser-info-test',
+  name: 'BrowserInfoTest',
+  component: BrowserInfoTestView, 
+  },
+  {
+  path: '/online-status-test',
+  name: 'OnlineStatusTest',
+  component: OnlineStatusTestView, 
+},
 
 
 ];
