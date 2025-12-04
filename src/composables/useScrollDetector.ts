@@ -2,31 +2,31 @@ import { onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 
 export function useScrollDetector(
-  scrollContainer: Ref<HTMLElement | null>,
+  contenedorDesplazamiento: Ref<HTMLElement | null>,
   callback: () => void,
-  buffer: number = 100
+  margen: number = 100
 ) {
-  const handleScroll = () => {
-    const el = scrollContainer.value
+  const manejarDesplazamiento = () => {
+    const el = contenedorDesplazamiento.value
     if (!el) return
 
-    const nearBottom =
-      el.scrollHeight - el.scrollTop <= el.clientHeight + buffer
+    const cercaDelFondo =
+      el.scrollHeight - el.scrollTop <= el.clientHeight + margen
 
-    if (nearBottom) {
+    if (cercaDelFondo) {
       callback()
     }
   }
 
   onMounted(() => {
-    const el = scrollContainer.value
+    const el = contenedorDesplazamiento.value
     if (!el) return
-    el.addEventListener('scroll', handleScroll)
+    el.addEventListener('scroll', manejarDesplazamiento)
   })
 
   onUnmounted(() => {
-    const el = scrollContainer.value
+    const el = contenedorDesplazamiento.value
     if (!el) return
-    el.removeEventListener('scroll', handleScroll)
+    el.removeEventListener('scroll', manejarDesplazamiento)
   })
 }

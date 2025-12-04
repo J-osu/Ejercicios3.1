@@ -1,139 +1,105 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { isSameDay } from '../utils/dateUtils'; // Importar el helper
-import { type CalendarEvent, type CalendarDay } from '../types'; // Importar las interfaces
+import { isSameDay } from '../utils/dateUtils';
+import { type CalendarEvent, type CalendarDay } from '../types';
 
-// ---------------------------------------------
-// 1. PROPS
-// ---------------------------------------------
 const props = defineProps<{
     year: number;
-    month: number; // 0-11
+    month: number;
     events: CalendarEvent[];
 }>();
 
-// Días de la semana para la cabecera
-const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const diasDeLaSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-// ---------------------------------------------
-// 2. LÓGICA PRINCIPAL: calendarGrid (Propiedad computed)
-// ---------------------------------------------
+const cuadrillaCalendario = computed<CalendarDay[]>(() => {
+    const cuadrilla: CalendarDay[] = [];
+    const primerDiaDelMes = new Date(props.year, props.month, 1);
+    const diasEnElMes = new Date(props.year, props.month + 1, 0).getDate();
 
-const calendarGrid = computed<CalendarDay[]>(() => {
-    const grid: CalendarDay[] = [];
+    // Determina el índice del primer día de la semana (Lunes=0, Domingo=6)
+    const indicePrimerDiaDeSemana = (primerDiaDelMes.getDay() + 6) % 7;
 
-    // --- 2.1 Determinar el primer día de la grilla ---
-    
-    // Objeto Date que representa el primer día del mes actual (ej: 1 de octubre de 2025).
-    const firstDayOfMonth = new Date(props.year, props.month, 1); 
-    // Obtenemos el número de días del mes actual.
-    const daysInMonth = new Date(props.year, props.month + 1, 0).getDate();
+    const diasMesAnteriorARellenar = indicePrimerDiaDeSemana;
 
-    // JS getDay() -> 0 (Dom), 1 (Lun), ..., 6 (Sáb). 
-    // Fórmula (d+6)%7 mapea Lun a 0 para que la semana empiece en Lunes.
-    const firstDayOfWeekIndex = (firstDayOfMonth.getDay() + 6) % 7; 
-    
-    // --- 2.2 Días de Relleno al Inicio (Mes Anterior) ---
-    
-    // Calcula cuántos días del mes anterior son necesarios para que el Lunes sea la primera celda.
-    const previousMonthDaysToFill = firstDayOfWeekIndex;
+    // Obtener el día de inicio para el relleno del mes anterior
+    const ultimoDiaMesAnterior = new Date(props.year, props.month, 0);
+    const diaInicio = ultimoDiaMesAnterior.getDate() - diasMesAnteriorARellenar + 1;
 
-    if (previousMonthDaysToFill > 0) {
-        // Encontramos el último día del mes anterior (Día 0 del mes actual).
-        const previousMonthLastDay = new Date(props.year, props.month, 0);
-        const lastDayNumber = previousMonthLastDay.getDate();
-
-        // Iteramos desde el día que inicia el relleno hasta el final del mes anterior.
-        for (let i = previousMonthDaysToFill; i > 0; i--) {
-            // Creamos la fecha del mes anterior. La fecha de la celda es: (Último Día - i + 1).
-            const dayNumber = lastDayNumber - i + 1;
-            const dayDate = new Date(props.year, props.month - 1, dayNumber); // 💡 CORRECCIÓN CLAVE: Usar props.month - 1
-            
-            grid.push({
-                date: dayDate,
-                isCurrentMonth: false,
-                events: [],
-            });
-        }
-    }
-
-    // --- 2.3 Generar Días del Mes Actual y Asignar Eventos ---
-    
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayDate = new Date(props.year, props.month, i);
-        
-        // Asignar Eventos: Encontrar eventos que coincidan con este día (Optimización: Podríamos usar un mapa para eventos).
-        const dayEvents = props.events.filter(event => isSameDay(event.date, dayDate));
-
-        grid.push({
-            date: dayDate,
-            isCurrentMonth: true,
-            events: dayEvents,
-        });
-    }
-
-    // --- 2.4 Días de Relleno al Final (Mes Siguiente) ---
-    
-    // Calculamos los días restantes para llenar la última fila (o llegar a 6 semanas).
-    let daysToFillAtEnd = 7 - (grid.length % 7);
-    if (daysToFillAtEnd === 7 && grid.length > 0) {
-        daysToFillAtEnd = 0; // Si ya está completo (ej. 35 o 42 días), no rellenamos 7 más.
-    }
-    
-    for (let i = 1; i <= daysToFillAtEnd; i++) {
-        // 💡 CORRECCIÓN CLAVE: Crear la fecha del mes siguiente usando props.month + 1.
-        const dayDate = new Date(props.year, props.month + 1, i); 
-        grid.push({
-            date: dayDate,
+    // Relleno con días del mes anterior
+    for (let i = 0; i < diasMesAnteriorARellenar; i++) {
+        const fechaDia = new Date(props.year, props.month, diaInicio + i);
+        cuadrilla.push({
+            date: fechaDia,
             isCurrentMonth: false,
             events: [],
         });
     }
 
-    return grid;
+    // Días del mes actual
+    for (let i = 1; i <= diasEnElMes; i++) {
+        const fechaDia = new Date(props.year, props.month, i);
+        
+        const eventosDia = props.events.filter(evento => isSameDay(evento.date, fechaDia));
+
+        cuadrilla.push({
+            date: fechaDia,
+            isCurrentMonth: true,
+            events: eventosDia,
+        });
+    }
+
+    // Relleno con días del mes siguiente
+    const diasParaRellenarAlFinal = 7 - (cuadrilla.length % 7);
+    const cuentaRellenoFinal = (diasParaRellenarAlFinal === 7) ? 0 : diasParaRellenarAlFinal;
+    
+    for (let i = 1; i <= cuentaRellenoFinal; i++) {
+        const fechaDia = new Date(props.year, props.month + 1, i);
+        cuadrilla.push({
+            date: fechaDia,
+            isCurrentMonth: false,
+            events: [],
+        });
+    }
+
+    return cuadrilla;
 });
 
-// ---------------------------------------------
-// 3. MEJORA: Título del Mes (Aprovecha la propiedad computed)
-// ---------------------------------------------
-const monthTitle = computed(() => {
-    // La fecha debe ser el primer día del mes para obtener el nombre correcto.
-    const date = new Date(props.year, props.month); 
-    // toLocaleDateString es la forma más robusta de formatear fechas para la UX.
-    return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+const tituloMes = computed(() => {
+    const fecha = new Date(props.year, props.month);
+    return fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 });
 
 </script>
 
 <template>
     <div class="calendar-container">
-        <h2>{{ monthTitle }}</h2>
+        <h2>{{ tituloMes }}</h2>
 
         <div class="calendar-header">
-            <div v-for="day in daysOfWeek" :key="day" class="day-label">{{ day }}</div>
+            <div v-for="dia in diasDeLaSemana" :key="dia" class="day-label">{{ dia }}</div>
         </div>
 
         <div class="calendar-grid">
             <div 
-                v-for="day in calendarGrid" 
-                :key="day.date.toISOString()" 
+                v-for="dia in cuadrillaCalendario" 
+                :key="dia.date.toISOString()" 
                 class="day-cell"
                 :class="{
-                    'is-not-current-month': !day.isCurrentMonth,
-                    'is-today': isSameDay(day.date, new Date()) // Comprobación de día actual
+                    'is-not-current-month': !dia.isCurrentMonth,
+                    'is-today': isSameDay(dia.date, new Date())
                 }"
             >
-                <div class="day-number">{{ day.date.getDate() }}</div>
+                <div class="day-number">{{ dia.date.getDate() }}</div>
 
                 <div class="events-list">
                     <div 
-                        v-for="event in day.events" 
-                        :key="event.title"
+                        v-for="evento in dia.events" 
+                        :key="evento.title"
                         class="event-item"
-                        :class="`event-${event.type}`"
-                        :title="event.title"
+                        :class="`event-${evento.type}`"
+                        :title="evento.title"
                     >
-                        {{ event.title }}
+                        {{ evento.title }}
                     </div>
                 </div>
             </div>
@@ -177,7 +143,7 @@ h2 {
 /* Celda de Día */
 .day-cell {
     border: 1px solid #eee;
-    min-height: 100px; /* Suficiente espacio para eventos */
+    min-height: 100px;
     padding: 5px;
     background-color: #fff;
     position: relative;
@@ -218,14 +184,13 @@ h2 {
     cursor: help;
 }
 
-/* Estilos por Tipo de Evento */
 .event-busy {
-    background-color: #dc3545; /* Rojo */
+    background-color: #dc3545;
 }
 .event-tentative {
-    background-color: #ffc107; /* Amarillo/Naranja */
+    background-color: #ffc107;
 }
 .event-holiday {
-    background-color: #17a2b8; /* Azul Claro */
+    background-color: #17a2b8;
 }
 </style>

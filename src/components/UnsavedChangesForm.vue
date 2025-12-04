@@ -1,12 +1,12 @@
 <template>
   <div class="form-card">
-    <h2>✍️ Editor de Documento</h2>
+    <h2>Editor de Documento</h2>
 
     <p v-if="hasUnsavedChanges" class="unsaved-warning">
-      ⚠️ Tienes **cambios sin guardar**. Navegar fuera mostrará una advertencia.
+      Tienes cambios sin guardar. Navegar fuera mostrará una advertencia.
     </p>
     <p v-else class="saved-status">
-      ✅ Contenido guardado.
+      Contenido guardado.
     </p>
 
     <div class="editor-area">
@@ -24,7 +24,7 @@
       :disabled="!hasUnsavedChanges"
       :class="{ 'primary': hasUnsavedChanges }"
     >
-      💾 Guardar Cambios
+      Guardar Cambios
     </button>
   </div>
 </template>

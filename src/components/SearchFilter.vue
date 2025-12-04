@@ -1,78 +1,69 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-// ----------------------------------------------------------------------
-// DATA DE PRUEBA INTERNA (Para que funcione de forma autónoma)
-// ----------------------------------------------------------------------
-interface Item {
-    id: number;
+interface Elemento {
     name: string;
 }
 
-const itemsData: Item[] = [
-    { id: 101, name: 'Apple MacBook Pro' },
-    { id: 102, name: 'Google Pixel 8' },
-    { id: 103, name: 'Samsung Galaxy S24' },
-    { id: 104, name: 'Sony PlayStation 5' },
-    { id: 105, name: 'Microsoft Surface' },
-    { id: 106, name: 'AirPods Max Pro' },
-    { id: 107, name: 'iPhone 15' },
-    { id: 108, name: 'Intel Core i9' },
-    { id: 109, name: 'AMD Ryzen 7' },
+const datosElementos: Elemento[] = [
+    {name: 'Apple MacBook Pro' },
+    {name: 'Google Pixel 8' },
+    {name: 'Samsung Galaxy S24' },
+    {name: 'Sony PlayStation 5' },
+    {name: 'Microsoft Surface' },
+    {name: 'AirPods Max Pro' },
+    {name: 'iPhone 15' },
+    {name: 'Intel Core i9' },
+    {name: 'AMD Ryzen 7' },
 ];
 
-const searchQuery = ref('');
+const consultaBusqueda = ref('');
 
-// ----------------------------------------------------------------------
-// LÓGICA DE FILTRADO Y RESALTADO
-// ----------------------------------------------------------------------
-
-const highlightMatches = (text: string): string => {
-    if (!searchQuery.value) {
-        return text;
+const resaltarCoincidencias = (texto: string): string => {
+    if (!consultaBusqueda.value) {
+        return texto;
     }
 
-    const escapedQuery = searchQuery.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escapedQuery, 'gi');
+    const consultaEscape = consultaBusqueda.value.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&');
+    const regex = new RegExp(`(${consultaEscape})`, 'gi');
+    return texto.replace(regex, '<mark class="highlight">$1</mark>');
 
-    return text.replace(regex, (match) => `<mark class="highlight">${match}</mark>`);
 };
 
-const filteredItems = computed(() => {
-    if (!searchQuery.value) {
-        return itemsData;
+const elementosFiltrados = computed(() => {
+    if (!consultaBusqueda.value) {
+        return datosElementos;
     }
 
-    const query = searchQuery.value.toLowerCase();
-
-    return itemsData.filter(item => {
-        return item.name.toLowerCase().includes(query);
+    const consultaMinusculas = consultaBusqueda.value.toLowerCase();
+    
+    return datosElementos.filter(elemento => {
+        return elemento.name.toLowerCase().includes(consultaMinusculas);
     });
 });
 </script>
 
 <template>
     <div class="search-filter-container">
-        <h2>Filtro de Búsqueda y Resaltado (Prueba Autónoma)</h2>
+        <h2>Búsqueda con Filtro de Texto</h2>
         
-        <input 
-            type="text" 
-            v-model="searchQuery" 
-            placeholder="Escribe para filtrar y resaltar..."
+        <input
+            type="text"
+            v-model="consultaBusqueda"
+            placeholder="Escribe para buscar..."
             class="search-input"
         />
 
         <p class="status-text">
-            Mostrando {{ filteredItems.length }} de {{ itemsData.length }} resultados. 
+            Mostrando {{ elementosFiltrados.length }} de {{ datosElementos.length }} resultados. 
         </p>
 
         <ul class="results-list">
-            <li v-for="item in filteredItems" :key="item.id">
-                <span v-html="highlightMatches(item.name)"></span>
-                <span class="item-id"> (ID: {{ item.id }})</span>
+            <li v-for="elemento in elementosFiltrados"  >
+                <span class="item-nombre" v-html="resaltarCoincidencias(elemento.name)"></span>
             </li>
-            <li v-if="filteredItems.length === 0" class="no-results">
-                No se encontraron coincidencias para "{{ searchQuery }}".
+            <li v-if="elementosFiltrados.length === 0" class="no-results">
+                No se encontraron coincidencias para "{{ consultaBusqueda }}".
             </li>
         </ul>
     </div>
@@ -102,6 +93,11 @@ const filteredItems = computed(() => {
     font-size: 16px;
 }
 
+.status-text {
+    margin-bottom: 10px;
+    color: #555;
+}
+
 .results-list {
     list-style: none;
     padding: 0;
@@ -109,24 +105,31 @@ const filteredItems = computed(() => {
 
 .results-list li {
     padding: 8px 0;
-    border-bottom: 1px dotted #eee;
-    font-size: 1em;
-    color: black;
+    border-bottom: 1px solid #eee;
+    font-size: 1.1em;
 }
 
 .results-list li:last-child {
     border-bottom: none;
 }
+.item-nombre{
+    color: #555;
+}
+.item-id {
+    color: #aaa;
+    font-size: 0.8em;
+}
 
 .no-results {
-    color: #cc0000;
+    color: #e74c3c;
     font-style: italic;
     padding: 10px 0;
 }
 
-.status-text {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 0;
+/* El estilo de la etiqueta <mark> se puede anular globalmente o usar un :deep() */
+:deep(mark) {
+    background-color: #fcf8e3;
+    padding: 2px 0;
+    border-radius: 2px;
 }
 </style>

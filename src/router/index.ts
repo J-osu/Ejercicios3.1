@@ -16,8 +16,6 @@ import CountdownTimer from '../view/Countdown.vue';
 import CalendarView from '../view/CalendarView.vue';
 import HistoryControls from '../components/HistoryControls.vue';
 import TabNavigator from '../components/TabNavigator.vue';
-import BrowserInfoTestView from '../view/BrowserInfoTestView.vue';
-import OnlineStatusTestView from '../view/OnlineStatusTestView.vue';
 
 export const routes = [
   {
@@ -113,17 +111,7 @@ export const routes = [
     path: '/tab',
     name: 'tab',
     component: TabNavigator
-  },
-  {
-  path: '/browser-info-test',
-  name: 'BrowserInfoTest',
-  component: BrowserInfoTestView, 
-  },
-  {
-  path: '/online-status-test',
-  name: 'OnlineStatusTest',
-  component: OnlineStatusTestView, 
-}
+  }
 
 
 ];

@@ -27,8 +27,9 @@ describe('TabNavigator.vue - Simulación SPA', () => {
     
     // 2. Simular un clic en el botón de la pestaña "Facturación".
     // Los botones están definidos en el template con v-for, por lo que los encontramos por su texto.
-    const facturacionButton = wrapper.findAll('button').find(b => b.text().includes('facturacion'));
-    
+    const facturacionButton = wrapper.findAll('button')
+      .find(b => b.text().includes('Facturación'));
+        
     expect(facturacionButton).toBeDefined();
 
     await facturacionButton?.trigger('click');
@@ -45,13 +46,10 @@ describe('TabNavigator.vue - Simulación SPA', () => {
       '/settings/facturacion'
     );
 
-    // 5. Verifica que el contenido de la pestaña de facturación está visible en el DOM.
-    // Buscamos el título específico de la pestaña de Facturación (fondo verde).
     const facturacionContent = wrapper.find('.bg-green-50');
     expect(facturacionContent.exists()).toBe(true);
     expect(facturacionContent.find('h2').text()).toBe('Contenido de Facturación');
     
-    // Opcional: Asegurarse de que el contenido anterior (perfil, azul) ya no está visible.
     expect(wrapper.find('.bg-blue-50').exists()).toBe(false);
   });
 });

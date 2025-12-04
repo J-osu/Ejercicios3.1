@@ -4,26 +4,26 @@
     <p>URL de prueba: **https://www.google.com**</p>
 
     <button
-      v-if="!isPopupOpen"
-      @click="openPopup"
-      :disabled="isPopupBlocked"
+      v-if="!estaEmergenteAbierta"
+      @click="abrirEmergente"
+      :disabled="estaEmergenteBloqueada"
       class="btn-open"
     >
       Abrir Ventana Pop-up
     </button>
     <button
       v-else
-      @click="closePopup"
+      @click="cerrarEmergente"
       class="btn-close"
     >
       Cerrar Ventana Pop-up
     </button>
 
-    <p v-if="isPopupBlocked" class="status-message blocked">
+    <p v-if="estaEmergenteBloqueada" class="status-message blocked">
       ⚠️ **¡Pop-up bloqueado!** El navegador impidió la apertura de la ventana. Asegúrate de
       permitir los pop-ups para este sitio.
     </p>
-    <p v-else-if="isPopupOpen" class="status-message open">
+    <p v-else-if="estaEmergenteAbierta" class="status-message open">
       ✅ Ventana abierta.
     </p>
     <p v-else class="status-message closed">
@@ -38,68 +38,53 @@
 import { ref, computed, onBeforeUnmount } from 'vue';
 import type { Ref } from 'vue';
 
-// 1. Define un ref para almacenar la referencia a la ventana.
-// El tipo Window | null es apropiado ya que window.open devuelve Window o null.
-const popupWindow: Ref<Window | null> = ref(null);
-const isPopupBlocked = ref(false); // Para controlar el estado de bloqueo del navegador
+const URL_POR_DEFECTO = 'https://www.google.com';
+const NOMBRE_POR_DEFECTO = '_blank';
+const CARACTERISTICAS_POR_DEFECTO = 'width=600,height=400,resizable=yes,scrollbars=yes';
 
-const TEST_URL = 'https://www.google.com'; // URL de prueba
+const ventanaEmergente: Ref<Window | null> = ref(null);
+const estaEmergenteBloqueada = ref(false);
 
-/**
- * Propiedad computada para determinar si la ventana emergente está actualmente abierta.
- *
- * Devuelve true si la referencia existe Y la ventana no ha sido cerrada por el usuario/sistema.
- */
-const isPopupOpen = computed(() => {
-  // Comprueba si la referencia existe y si la propiedad 'closed' no es true
-  return !!popupWindow.value && !popupWindow.value.closed;
+const estaEmergenteAbierta = computed((): boolean => {
+  return ventanaEmergente.value !== null && !ventanaEmergente.value.closed;
 });
 
-/**
- * Método para abrir la ventana emergente.
- */
-const openPopup = () => {
-  isPopupBlocked.value = false; // Resetear el estado de bloqueo
+const abrirEmergente = (): void => {
+  if (estaEmergenteAbierta.value) {
+    ventanaEmergente.value?.focus();
+    return;
+  }
+  
+  estaEmergenteBloqueada.value = false;
 
-  // Llamada a window.open
-  const newWindow = window.open(
-    TEST_URL,
-    '_blank',
-    'width=600,height=400,scrollbars=yes,resizable=yes'
+  ventanaEmergente.value = window.open(
+    URL_POR_DEFECTO,
+    NOMBRE_POR_DEFECTO,
+    CARACTERISTICAS_POR_DEFECTO
   );
 
-  // 1. Almacenar la referencia.
-  popupWindow.value = newWindow;
-
-  // 2. Controlar si window.open fue bloqueado (devuelve null).
-  if (!newWindow) {
-    isPopupBlocked.value = true;
-    console.error('El pop-up fue bloqueado por el navegador.');
-  }
-};
-
-/**
- * Método para cerrar la ventana emergente.
- */
-const closePopup = () => {
-  // 1. Comprobar si la referencia existe Y si la ventana no ha sido cerrada.
-  if (popupWindow.value && !popupWindow.value.closed) {
-    // 2. Llamar al método close() de la ventana.
-    popupWindow.value.close();
-    console.log('Ventana emergente cerrada.');
+  if (!ventanaEmergente.value) {
+    estaEmergenteBloqueada.value = true;
+    ventanaEmergente.value = null; 
+  } else if (typeof ventanaEmergente.value.focus === "function") {
+    ventanaEmergente.value.focus();
   }
 
-  // 3. Limpiar la referencia.
-  popupWindow.value = null;
-  isPopupBlocked.value = false; // Restablecer el estado de bloqueo si estaba activo
 };
 
-// Hook de ciclo de vida: Asegurar que la ventana se cierre si el componente se desmonta
+const cerrarEmergente = (): void => {
+  if (ventanaEmergente.value && !ventanaEmergente.value.closed) {
+    ventanaEmergente.value.close();
+  }
+  ventanaEmergente.value = null;
+  estaEmergenteBloqueada.value = false; 
+};
+
 onBeforeUnmount(() => {
-  if (isPopupOpen.value) {
-    closePopup();
+  if (estaEmergenteAbierta.value) {
+    cerrarEmergente();
   }
-});
+})
 </script>
 
 <style scoped>
@@ -139,7 +124,7 @@ button {
   background-color: #e74c3c;
   color: white;
 }
-.btn-close:hover {
+.btn-close:hover:not(:disabled) {
   background-color: #c0392b;
 }
 
@@ -150,31 +135,30 @@ button:disabled {
 
 .status-message {
   margin-top: 15px;
-  padding: 10px;
+  padding: 8px;
   border-radius: 4px;
-  font-style: italic;
 }
 
 .blocked {
-  background-color: #fdd;
+  background-color: #f7e0e0;
   color: #c0392b;
-  border: 1px solid #c0392b;
+  font-weight: bold;
+  border: 1px solid #e74c3c;
 }
 
 .open {
-  background-color: #e9fbe8;
+  background-color: #e6f7e9;
   color: #27ae60;
-  border: 1px solid #27ae60;
+  font-weight: bold;
 }
 
 .closed {
-  background-color: #f7f7f7;
-  color: #7f8c8d;
+  color: #95a5a6;
 }
 
 hr {
-    margin-top: 20px;
-    border: 0;
-    border-top: 1px solid #eee;
+  margin-top: 20px;
+  border: 0;
+  border-top: 1px solid #eee;
 }
 </style>

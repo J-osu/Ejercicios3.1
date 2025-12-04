@@ -1,159 +1,131 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, type Ref } from 'vue';
 
-// ---------------------------------------------
-// 1. PROPS
-// ---------------------------------------------
+// 1. CORRECCIÓN PRINCIPAL: Cambiamos 'fechaObjetivo' a 'targetDate'
+// para que coincida con el atributo 'target-date' enviado desde el componente padre.
+// También la hacemos explícitamente requerida (lo que ayuda con el tipado si no usamos <T>).
+const props = defineProps({
+    targetDate: {
+        type: Date,
+        required: true, 
+    },
+});
 
-const props = defineProps<{
-    targetDate: Date; // Fecha límite del evento
-}>();
+const dias = ref(0);
+const horas = ref(0);
+const minutos = ref(0);
+const segundos = ref(0);
 
-// ---------------------------------------------
-// 2. ESTADO REACTIVO
-// ---------------------------------------------
+const estaFinalizado = ref(false);
 
-const days = ref(0);
-const hours = ref(0);
-const minutes = ref(0);
-const seconds = ref(0);
+// El tipo es `number` en el entorno de navegador para el ID de setInterval.
+let idTemporizador: number | null = null; 
 
-const isFinished = ref(false);
-
-// Requisito: Variable para el ID del intervalo
-let timerId: number | null = null; 
-
-// ---------------------------------------------
-// 3. LÓGICA DE CÁLCULO Y ACTUALIZACIÓN
-// ---------------------------------------------
-
-/**
- * Función que detiene el temporizador.
- */
-const stopTimer = () => {
-    if (timerId !== null) {
-        clearInterval(timerId);
-        timerId = null;
+const detenerTemporizador = () => {
+    if (idTemporizador !== null) {
+        clearInterval(idTemporizador);
+        idTemporizador = null;
     }
 };
 
-/**
- * Requisito: Implementa la lógica de cálculo y actualización (updateCountdown).
- */
-const updateCountdown = () => {
-    // 1. Obtiene la fecha actual
-    const now = new Date().getTime();
-    const targetTime = props.targetDate.getTime();
+const actualizarCuentaAtras = () => {
+    // 2. CORRECCIÓN DE TypeError (Cannot read properties of undefined):
+    // Chequeamos si la prop es válida antes de intentar llamar a getTime().
+    // Esto previene el crash si la prop llega tarde o es inválida.
+    if (!props.targetDate || isNaN(props.targetDate.getTime())) {
+        detenerTemporizador();
+        dias.value = horas.value = minutos.value = segundos.value = 0;
+        estaFinalizado.value = true;
+        return; 
+    }
     
-    // 2. Calcula la distancia en milisegundos
-    let distance = targetTime - now;
+    const ahora = new Date().getTime();
+    // 3. Referencia a la prop corregida a 'targetDate'
+    const tiempoObjetivo = props.targetDate.getTime();
+    let distancia = tiempoObjetivo - ahora;
 
-    // 3. Manejo de finalización: Si la distancia es menor o igual a cero
-    if (distance <= 0) {
-        isFinished.value = true;
-        stopTimer(); 
+    if (distancia <= 0) {
+        estaFinalizado.value = true;
+        detenerTemporizador(); 
         
-        // Asegurar que las unidades estén en cero al finalizar
-        days.value = hours.value = minutes.value = seconds.value = 0;
+        dias.value = horas.value = minutos.value = segundos.value = 0;
         return;
     }
+    const MS_EN_SEGUNDO = 1000;
+    const MS_EN_MINUTO = MS_EN_SEGUNDO * 60;
+    const MS_EN_HORA = MS_EN_MINUTO * 60;
+    const MS_EN_DIA = MS_EN_HORA * 24;
 
-    // 4. Convierte la distancia a días, horas, minutos y segundos:
-    
-    // Constantes de tiempo
-    const MS_IN_SECOND = 1000;
-    const MS_IN_MINUTE = MS_IN_SECOND * 60;
-    const MS_IN_HOUR = MS_IN_MINUTE * 60;
-    const MS_IN_DAY = MS_IN_HOUR * 24;
+    dias.value = Math.floor(distancia / MS_EN_DIA);
 
-    // a) Días
-    days.value = Math.floor(distance / MS_IN_DAY);
+    horas.value = Math.floor((distancia % MS_EN_DIA) / MS_EN_HORA);
 
-    // b) Horas (usa el módulo del día)
-    hours.value = Math.floor((distance % MS_IN_DAY) / MS_IN_HOUR);
+    minutos.value = Math.floor((distancia % MS_EN_HORA) / MS_EN_MINUTO);
 
-    // c) Minutos (usa el módulo de la hora)
-    minutes.value = Math.floor((distance % MS_IN_HOUR) / MS_IN_MINUTE);
-
-    // d) Segundos (usa el módulo del minuto)
-    seconds.value = Math.floor((distance % MS_IN_MINUTE) / MS_IN_SECOND);
+    segundos.value = Math.floor((distancia % MS_EN_MINUTO) / MS_EN_SEGUNDO);
 };
 
-// ---------------------------------------------
-// 4. CICLO DE VIDA (LIFECYCLE)
-// ---------------------------------------------
-
-// Requisito: En onMounted, inicia el temporizador
 onMounted(() => {
-    // Llamar una vez para inicializar inmediatamente y evitar el "parpadeo" inicial.
-    updateCountdown(); 
+    actualizarCuentaAtras(); 
     
-    // Inicia un setInterval que llama a updateCountdown cada 1000ms
-    timerId = setInterval(updateCountdown, 1000);
+    // Solo iniciamos el temporizador si la fecha es válida inicialmente
+    if (!estaFinalizado.value) {
+        idTemporizador = setInterval(actualizarCuentaAtras, 1000);
+    }
 });
 
-// Requisito: En onUnmounted, limpia el intervalo
 onUnmounted(() => {
-    stopTimer();
+    detenerTemporizador();
 });
 
-// ---------------------------------------------
-// 5. MEJORA DE FORMATO
-// ---------------------------------------------
-
-/**
- * Función computada para formatear una unidad con dos dígitos (ej: 9 -> 09).
- * Usa String.padStart(2, '0').
- */
-const formatUnit = (unit: Ref<number>) => {
-    return computed(() => String(unit.value).padStart(2, '0'));
+const formatearUnidad = (unidad: Ref<number>) => {
+    return computed(() => String(unidad.value).padStart(2, '0'));
 }
 
-const displayHours = formatUnit(hours);
-const displayMinutes = formatUnit(minutes);
-const displaySeconds = formatUnit(seconds);
+const mostrarHoras = formatearUnidad(horas);
+const mostrarMinutos = formatearUnidad(minutos);
+const mostrarSegundos = formatearUnidad(segundos);
 </script>
 
 <template>
     <div class="countdown-timer">
-        <div v-if="isFinished" class="finished-message">
+        <div v-if="estaFinalizado" class="finished-message">
             🎉 ¡El evento ha comenzado! 🎉
         </div>
 
         <div v-else class="timer-display">
             
             <div class="time-unit">
-                <span class="value">{{ days }}</span>
+                <span class="value">{{ dias }}</span>
                 <span class="label">Días</span>
             </div>
             <span class="separator">:</span>
 
             <div class="time-unit">
-                <span class="value">{{ displayHours }}</span>
+                <span class="value">{{ mostrarHoras }}</span>
                 <span class="label">Horas</span>
             </div>
             <span class="separator">:</span>
             
             <div class="time-unit">
-                <span class="value">{{ displayMinutes }}</span>
+                <span class="value">{{ mostrarMinutos }}</span>
                 <span class="label">Minutos</span>
             </div>
             <span class="separator">:</span>
             
             <div class="time-unit">
-                <span class="value">{{ displaySeconds }}</span>
+                <span class="value">{{ mostrarSegundos }}</span>
                 <span class="label">Segundos</span>
             </div>
         </div>
         
         <p class="target-info">
-            Fecha objetivo: {{ targetDate.toLocaleString() }}
-        </p>
+            Fecha objetivo: {{ targetDate?.toLocaleString() }} 
+            </p>
     </div>
 </template>
 
 <style scoped>
-/* Estilos proporcionados previamente para la visualización */
 .countdown-timer {
     display: flex;
     flex-direction: column;

@@ -116,8 +116,7 @@ describe('CountdownTimer.vue (Fake Timers)', () => {
         const finishedMessage = wrapper.find('.finished-message');
         expect(finishedMessage.exists()).toBe(true);
         expect(finishedMessage.text()).toBe('🎉 ¡El evento ha comenzado! 🎉');
-        
-        // Comprueba que el intervalo se ha detenido (timerCount = 0)
+ 
         expect(vi.getTimerCount()).toBe(0);
     });
 });

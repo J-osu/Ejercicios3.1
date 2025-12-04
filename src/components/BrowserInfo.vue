@@ -1,22 +1,22 @@
 <template>
   <div class="card p-4 shadow-sm my-4 bg-light">
-    <h3 class="text-primary mb-4 fw-bold">⭐ Panel de Diagnóstico del Navegador</h3>
+    <h3 class="text-primary mb-4 fw-bold">Panel de Diagnóstico del Navegador</h3>
 
     <ul class="list-unstyled">
       
       <li class="mb-2">
-        <strong class="text-dark me-2">🌐 Idioma Preferido:</strong>
+        <strong class="text-dark me-2">Idioma Preferido:</strong>
         <span class="text-secondary fw-bold">{{ preferredLanguage }}</span>
         <span class="small text-muted">({{ getLanguageName(preferredLanguage) }})</span>
       </li>
       
       <li class="mb-2">
-        <strong class="text-dark me-2">💻 Plataforma (SO):</strong>
+        <strong class="text-dark me-2">Plataforma (SO):</strong>
         <span class="text-secondary fw-bold">{{ operatingSystem }}</span>
       </li>
       
       <li class="mb-2">
-        <strong class="text-dark me-2">🍪 Cookies Habilitadas: </strong>
+        <strong class="text-dark me-2">Cookies Habilitadas: </strong>
         <span class="fw-bold" :class="cookiesEnabledText === 'Sí' ? 'text-success' : 'text-danger'">
           {{ cookiesEnabledText }}
         </span>

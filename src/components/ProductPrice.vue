@@ -1,79 +1,107 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-// --- LÓGICA DEL COMPOSABLE MOVIDA AL INTERIOR ---
-
-/**
- * Función que crea y devuelve el formateador de divisas.
- * Nota: En un proyecto real, esto estaría en 'useCurrencyFormatter.ts'.
- */
-const createCurrencyFormatter = () => {
+const crearFormateadorDivisas = () => {
     
-    const formatCurrency = (amount: number, locale: string, currencyCode: string): string => {
+    const formatearDivisa = (monto: number, localizacion: string, codigoDivisa: string): string => {
         
-        if (typeof amount !== 'number' || isNaN(amount)) {
+        // Esta comprobación sigue siendo importante para manejar valores no numéricos
+        if (typeof monto !== 'number' || isNaN(monto)) {
             return 'Monto no válido'; 
         }
 
         try {
-            // Usa Intl.NumberFormat para el formateo internacional
-            const formatter = new Intl.NumberFormat(locale, {
+            const formateador = new Intl.NumberFormat(localizacion, {
                 style: 'currency',
-                currency: currencyCode,
+                currency: codigoDivisa,
                 minimumFractionDigits: 2, 
             });
-            return formatter.format(amount);
+            return formateador.format(monto);
         } catch (error) {
             console.error('Error al formatear divisa:', error);
-            return `Error de formato para ${currencyCode}`;
+            return `Error de formato para ${codigoDivisa}`;
         }
     };
 
     return {
-        formatCurrency,
+        formatearDivisa,
     };
 };
-const props = defineProps<{
-    price: number;
-    locale: string;
-    currencyCode: string;
-}>();
 
-const { formatCurrency } = createCurrencyFormatter();
-
-const formattedPrice = computed(() => {
-    return formatCurrency(props.price, props.locale, props.currencyCode);
+const props = withDefaults(defineProps<{
+    price?: number;
+    locale?: string;
+    currencyCode?: string;
+}>(), {
+    price: 123.45,
+    locale: 'es-ES',
+    currencyCode: 'EUR',
 });
 
-const currencyExamples = [
-    { price: 1999.5, locale: 'en-US', currencyCode: 'USD', description: 'Dólar Americano (Separador de miles: coma)' },
-    { price: 1999.5, locale: 'es-ES', currencyCode: 'EUR', description: 'Euro Español (Separador de miles: punto)' },
-    { price: 1999.5, locale: 'ja-JP', currencyCode: 'JPY', description: 'Yen Japonés (Redondea, sin decimales)' },
-    { price: 1999.5, locale: 'de-DE', currencyCode: 'EUR', description: 'Euro Alemán (Símbolo al final)' },
-    { price: 123456.78, locale: 'pt-BR', currencyCode: 'BRL', description: 'Real Brasileño' },
-];
+const { formatearDivisa } = crearFormateadorDivisas();
 
+const precioFormateado = computed(() => {
+   
+    return formatearDivisa(props.price, props.locale, props.currencyCode);
+});
 </script>
 
 <template>
     <div class="product-price-demo-page">
-        <h1>Demostración Autocontenida del Formateador de Divisas</h1>
+        <h1>Demostración del Formateador de Precios</h1>
+        
         <p class="intro-text">
-            Este componente demuestra el uso de `Intl.NumberFormat` para formatear el mismo precio base (<strong>1999.50</strong>) según diferentes configuraciones regionales (`locale`) y divisas (`currencyCode`).
+            Este componente demuestra cómo usar la API <code class="bg-gray-100 p-0.5 rounded text-xs">Intl.NumberFormat</code> 
+            para formatear precios según diferentes localizaciones y códigos de divisa.
         </p>
         
         <div class="examples-container">
-            <div v-for="(item, index) in currencyExamples" :key="index" class="example-card">
-                
-                <p class="description">{{ item.description }}</p>
-
-                <div class="product-price">
-                    <p class="label">Precio Formateado:</p>
-                    <span class="price-display">{{ createCurrencyFormatter().formatCurrency(item.price, item.locale, item.currencyCode) }}</span>
-                    
-                    <p class="details">
-                        (Datos de entrada: {{ item.price }} | Región: {{ item.locale }} | Divisa: {{ item.currencyCode }})
-                    </p>
+            
+            <div class="example-card">
+                <p class="description">Precio del Producto (por defecto):</p>
+                <div class="price-display">
+                    <span class="price-value">{{ precioFormateado }}</span>
+                </div>
+                <div class="details">
+                    <p>Precio: {{ props.price }}</p>
+                    <p>Localización: {{ props.locale }}</p>
+                    <p>Código de divisa: {{ props.currencyCode }}</p>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <p class="description">Ejemplo: USD, en formato de EE. UU. (en el componente):</p>
+                <div class="price-display">
+                    <span class="price-value">{{ formatearDivisa(1500.50, 'en-US', 'USD') }}</span>
+                </div>
+                <div class="details">
+                    <p>Precio: 1500.50</p>
+                    <p>Localización: en-US</p>
+                    <p>Código de divisa: USD</p>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <p class="description">Ejemplo: EUR, en formato de Alemania:</p>
+                <div class="price-display">
+                    <span class="price-value">{{ formatearDivisa(1234.56, 'de-DE', 'EUR') }}</span>
+                </div>
+                <div class="details">
+                    <p>Precio: 1234.56</p>
+                    <p>Localización: de-DE</p>
+                    <p>Código de divisa: EUR</p>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <p class="description">Ejemplo: JPY (sin decimales), en formato de Japón:</p>
+                <div class="price-display">
+                    <span class="price-value">{{ formatearDivisa(999, 'ja-JP', 'JPY') }}</span>
+                </div>
+                <div class="details">
+                    <p>Precio: 999</p>
+                    <p>Localización: ja-JP</p>
+                    <p>Código de divisa: JPY</p>
                 </div>
             </div>
         </div>
@@ -122,35 +150,20 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* Estilos del componente PRODUCTPRICE (TUS ESTILOS ORIGINALES) */
-.product-price {
-    padding: 15px; /* Ajustado ligeramente */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f4f4f4;
-    max-width: 100%; /* Ajustado para el grid */
-    margin: 0;
-}
-
-.label {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 5px;
-}
-
 .price-display {
-    font-size: 1.8em;
+    font-size: 1.8rem;
     font-weight: bold;
-    color: #333;
-    display: block;
     margin-bottom: 10px;
 }
 
+.price-value {
+    color: #28a745; 
+}
+
 .details {
-    font-size: 0.8em;
-    color: #888;
-    border-top: 1px dashed #ccc;
+    font-size: 0.9em;
+    color: #666;
+    border-top: 1px dashed #eee;
     padding-top: 10px;
-    margin-top: 10px;
 }
 </style>

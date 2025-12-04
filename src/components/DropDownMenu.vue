@@ -1,16 +1,16 @@
 <template>
   <div style="position: relative; display: inline-block;">
     <button
-      ref="buttonRef"
-      @click.stop="isOpen = !isOpen"
+      ref="referenciaBoton"
+      @click.stop="estaAbierto = !estaAbierto"
       style="padding: 6px 12px; cursor: pointer; background: #1e90ff; color: white; border: none; border-radius: 4px;"
     >
       Abrir menú
     </button>
 
     <div
-      v-if="isOpen"
-      ref="menuRef"
+      v-if="estaAbierto"
+      ref="referenciaMenu"
       data-testid="menu"
       @click.stop
       style="
@@ -35,12 +35,12 @@
 import { ref } from 'vue'
 import { useClickOutside } from '../composables/useClickOutside'
 
-const isOpen = ref(false)
-const menuRef = ref<HTMLElement | null>(null)
-const buttonRef = ref<HTMLElement | null>(null)
+const estaAbierto = ref(false)
+const referenciaMenu = ref<HTMLElement | null>(null)
+const referenciaBoton = ref<HTMLElement | null>(null)
 
-useClickOutside(menuRef, (event) => {
-  if (buttonRef.value?.contains(event.target as Node)) return
-  isOpen.value = false
+useClickOutside(referenciaMenu, (evento) => {
+  if (referenciaBoton.value?.contains(evento.target as Node)) return
+  estaAbierto.value = false
 })
 </script>
