@@ -16,15 +16,10 @@ describe('CountdownTimer.vue (Fake Timers)', () => {
     const START_TIME = new Date('2025-11-20T10:00:00Z'); 
     const TARGET_DATE = new Date('2025-11-21T12:30:30Z'); 
 
-    // 🛑 CORRECCIÓN: Configurar timers antes de CADA test
     beforeEach(() => {
-        // 1. Activar los Fake Timers para este test
         vi.useFakeTimers(); 
-        // 2. Fijar la hora del sistema
         vi.setSystemTime(START_TIME); 
     });
-
-    // 🛑 CORRECCIÓN: Limpiar timers después de CADA test
     afterEach(() => {
         // Restaurar y limpiar el estado de los mocks
         vi.useRealTimers();

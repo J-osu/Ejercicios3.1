@@ -14,6 +14,8 @@ import SearchFilter from '../components/SearchFilter.vue';
 import ProductPrice from '../components/ProductPrice.vue';
 import CountdownTimer from '../view/Countdown.vue';
 import CalendarView from '../view/CalendarView.vue';
+import HistoryControls from '../components/HistoryControls.vue';
+import TabNavigator from '../components/TabNavigator.vue';
 
 export const routes = [
   {
@@ -99,6 +101,16 @@ export const routes = [
     path: '/calendario',
     name: 'calendario',
     component: CalendarView
+  },
+  {
+    path: '/manejo',
+    name: 'manejo',
+    component: HistoryControls
+  },
+  {
+    path: '/tab',
+    name: 'tab',
+    component: TabNavigator
   }
 
 
