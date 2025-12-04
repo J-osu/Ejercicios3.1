@@ -115,7 +115,7 @@ describe('CountdownTimer.vue (Fake Timers)', () => {
         // Comprueba que el mensaje de finalización está visible
         const finishedMessage = wrapper.find('.finished-message');
         expect(finishedMessage.exists()).toBe(true);
-        expect(finishedMessage.text()).toBe('🎉 ¡El evento ha comenzado! 🎉');
+        expect(finishedMessage.text()).toBe('¡El evento ha comenzado!');
  
         expect(vi.getTimerCount()).toBe(0);
     });

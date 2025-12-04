@@ -20,11 +20,11 @@
     </button>
 
     <p v-if="estaEmergenteBloqueada" class="status-message blocked">
-      ⚠️ **¡Pop-up bloqueado!** El navegador impidió la apertura de la ventana. Asegúrate de
+      **¡Pop-up bloqueado!** El navegador impidió la apertura de la ventana. Asegúrate de
       permitir los pop-ups para este sitio.
     </p>
     <p v-else-if="estaEmergenteAbierta" class="status-message open">
-      ✅ Ventana abierta.
+      Ventana abierta.
     </p>
     <p v-else class="status-message closed">
       ❌ Ventana cerrada.
