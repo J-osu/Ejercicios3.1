@@ -1,7 +1,7 @@
 <template>
   <div class="container py-5">
     
-    <h1 class="text-center mb-4 fw-bold text-secondary">🧪 Entorno de Prueba: Acciones de Navegación</h1>
+    <h1 class="text-center mb-4 fw-bold text-secondary">Acciones de Navegación</h1>
     <p class="text-center lead text-muted mb-5">
       Este componente llama a métodos reales de <code class="bg-warning p-1 rounded">window.location</code>.
       <br>

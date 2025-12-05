@@ -1,7 +1,7 @@
 <template>
   <div class="container py-5">
     
-    <h1 class="text-center mb-4 fw-bold text-secondary">🧪 Prueba: Redirección por Idioma</h1>
+    <h1 class="text-center mb-4 fw-bold text-secondary">Redirección por Idioma</h1>
     <p class="text-center lead text-muted mb-4">
       Esta página monta el componente de guardia. Haz clic en los enlaces para cambiar el parámetro <code class="bg-light p-1 rounded">?lang=</code> en la URL.
     </p>

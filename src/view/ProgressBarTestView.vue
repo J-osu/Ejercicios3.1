@@ -1,7 +1,6 @@
 <template>
   <div class="container py-5">
     
-    <!-- El Componente a Probar: ScrollProgressBar (Se posicionará en el top: 0 por sus estilos) -->
     <ScrollProgressBar />
 
     <h1 class="text-center mb-5 fw-bold text-secondary">Barra de Progreso de Lectura</h1>
@@ -10,7 +9,6 @@
       Se llenará a medida que avanzas en el contenido.
     </p>
 
-    <!-- Simulación de Artículo Largo o Documentación -->
     <div class="article-content">
       <div v-for="i in 15" :key="i" class="card mb-4 shadow-sm">
         <div class="card-body">

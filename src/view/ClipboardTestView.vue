@@ -1,15 +1,13 @@
 <template>
   <div class="container py-5">
     
-    <h1 class="text-center mb-4 fw-bold text-secondary">🧪 Prueba: Copiar al Portapapeles</h1>
+    <h1 class="text-center mb-4 fw-bold text-secondary">Copiar al Portapapeles</h1>
     <p class="text-center lead text-muted mb-5">
       Haz clic en cualquier botón de "Copiar" para usar la API <code class="bg-light p-1 rounded">navigator.clipboard.writeText()</code>.
     </p>
 
-    <!-- Escenarios de Prueba -->
     <div class="row g-4">
       
-      <!-- Escenario 1: Código Largo (Texto en general) -->
       <div class="col-lg-6">
         <div class="card shadow-sm">
           <div class="card-body">
@@ -20,7 +18,6 @@
         </div>
       </div>
 
-      <!-- Escenario 2: URL corta (Enlaces) -->
       <div class="col-lg-6">
         <div class="card shadow-sm">
           <div class="card-body">
@@ -31,7 +28,6 @@
         </div>
       </div>
 
-      <!-- Escenario 3: Fragmento de Código (Una sola línea) -->
       <div class="col-lg-6">
         <div class="card shadow-sm">
           <div class="card-body">

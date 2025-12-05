@@ -1,6 +1,6 @@
 <template>
   <div class="container my-5">
-    <h1 class="text-center mb-4 text-primary">📍 Radar de Amigos Cercanos</h1>
+    <h1 class="text-center mb-4 text-primary">Radar de Amigos Cercanos</h1>
 
     <div class="card p-4 mb-4 shadow-sm">
       <h4 class="text-secondary mb-3">Tu Estado Actual</h4>

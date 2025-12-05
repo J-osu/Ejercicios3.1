@@ -73,8 +73,7 @@ const irA = (paginas: number) => {
     </div>
     
     <p class="mt-6 text-xs text-gray-400 text-center">
-      Nota: Para que "Atrás", "Adelante" y "Ir 2 páginas Atrás" funcionen, debes haber navegado 
-      a otras URLs en el mismo origen de sesión.
+      Para que "Atrás", "Adelante" y "Ir 2 páginas Atrás" funcionen, debes haber navegado a otras URLs en el mismo origen de sesión.
     </p>
   </div>
 </template>

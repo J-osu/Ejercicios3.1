@@ -3,13 +3,11 @@
     <h1 class="text-center mb-4 fw-bold text-secondary">Página de Prueba de Scroll</h1>
     <p class="text-center lead text-muted">Desplázate hacia abajo para ver aparecer el botón "Volver Arriba".</p>
 
-    <!-- Monitor de Scroll para Debugging -->
     <div class="alert alert-info text-center sticky-top-custom shadow-sm mb-4">
       <h5 class="mb-0">Posición Actual del Scroll: {{ currentScrollY }} px</h5>
       <p class="small mb-0">El botón aparecerá al superar los 200px.</p>
     </div>
 
-    <!-- Contenido de Relleno (Simula una página larga) -->
     <div v-for="section in 10" :key="section" class="card mb-4 shadow-sm">
       <div class="card-body">
         <h3 class="card-title text-primary">Sección de Contenido #{{ section }}</h3>
@@ -26,7 +24,6 @@
       </div>
     </div>
     
-    <!-- El Componente a Probar: ScrollToTopButton -->
     <ScrollToTopButton />
 
   </div>

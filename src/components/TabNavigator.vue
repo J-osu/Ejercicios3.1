@@ -89,8 +89,8 @@ onUnmounted(() => {
     </div>
     
     <div class="p-6 pt-0 text-sm text-gray-500 border-t border-gray-100 mt-6">
-      <p>¡Desafío cumplido! Al hacer clic en las pestañas, la URL se actualiza gracias a <code class="bg-gray-100 p-0.5 rounded text-xs">history.pushState()</code>.</p>
-      <p class="mt-2">Además, si navegas a otra página y usas el botón **Atrás** del navegador, la pestaña correcta se restaura gracias al evento <code class="bg-gray-100 p-0.5 rounded text-xs">popstate</code>.</p>
+      <p>Al hacer clic en las pestañas, la URL se actualiza gracias a <code class="bg-gray-100 p-0.5 rounded text-xs">history.pushState()</code>.</p>
+      <p class="mt-2">Además, si navegas a otra página y usas el botón "Atrás" del navegador, la pestaña correcta se restaura gracias al evento <code class="bg-gray-100 p-0.5 rounded text-xs">popstate</code>.</p>
     </div>
   </div>
 </template>

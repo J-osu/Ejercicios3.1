@@ -3,7 +3,6 @@
     
     <h1 class="text-center mb-4 fw-bold text-secondary">🚨 Prueba: Componente de Redirección Inteligente</h1>
     
-    <!-- 1. Sección de Diagnóstico de Entorno -->
     <div class="card p-4 shadow-lg mb-4 bg-light">
       <h4 class="text-primary mb-3">Diagnóstico Actual (Lectura de window/navigator)</h4>
       
@@ -18,7 +17,6 @@
       </dl>
     </div>
 
-    <!-- 2. Botón para Desencadenar la Lógica -->
     <div class="alert alert-warning text-center fw-bold">
       ¡ADVERTENCIA! Al hacer clic, el componente se montará y ejecutará su lógica. 
       Podrías ser redirigido inmediatamente.
@@ -36,12 +34,10 @@
       </div>
     </div>
 
-    <!-- 3. Integración del Componente de Redirección (Montaje Condicional) -->
     <div v-if="isRedirectorMounted">
       <SmartRedirector />
     </div>
 
-    <!-- 4. Instrucciones de Prueba Manual -->
     <div class="mt-5 pt-4 border-top">
         <h4 class="text-secondary mb-3">Instrucciones de Prueba Manual</h4>
         <ul class="small">
