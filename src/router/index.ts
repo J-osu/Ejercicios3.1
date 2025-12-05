@@ -1,4 +1,4 @@
-import ScrollTestView from '../view/ScrollTestView.vue'; // Ensure the file exists in the 'views' folder
+import ScrollTestView from '../view/ScrollTestView.vue';
 import WindowSizeDisplay from '../components/WindowSizeDisplay.vue';
 import ProgressBarTestView from '../view/ProgressBarTestView.vue';
 import UrlInspectorTestView from '../view/UrlInspectorTestView.vue';
@@ -16,6 +16,10 @@ import CountdownTimer from '../view/Countdown.vue';
 import CalendarView from '../view/CalendarView.vue';
 import HistoryControls from '../components/HistoryControls.vue';
 import TabNavigator from '../components/TabNavigator.vue';
+import ClipboardTestView from '../view/ClipboardTestView.vue';
+import RadarTestView from '../view/RadarTestView.vue';
+import OnlineStatusTestView from '../view/OnlineStatusTestView.vue';
+import BrowserInfoTestView from '../view/BrowserInfoTestView.vue';
 
 export const routes = [
   {
@@ -54,25 +58,25 @@ export const routes = [
   path: '/lang-test',
   name: 'LanguageRedirectTest',
   component: LanguageRedirectTestView, 
-},
-{ path: '/lang-en.html', component: { template: '<h1>Página de Destino: Inglés</h1>' } },
-{ path: '/lang-es.html', component: { template: '<h1>Página de Destino: Español</h1>' } },
-{
-  path: '/pokemon',
-  name: 'InfinityScrollList',
-  component: InfinityScrollList
-},
-{
-  path: '/dropdown',
-  name: 'DropDownMenu',
-  component: DropDownMenu
-},
-{
-  path: '/fullscreenwrapper',
-  name: 'FullScreenWrapper',
-  component: FullscreenWrapper
-},
-{
+  },
+  { path: '/lang-en.html', component: { template: '<h1>Página de Destino: Inglés</h1>' } },
+  { path: '/lang-es.html', component: { template: '<h1>Página de Destino: Español</h1>' } },
+  {
+    path: '/pokemon',
+    name: 'InfinityScrollList',
+    component: InfinityScrollList
+  },
+  {
+    path: '/dropdown',
+    name: 'DropDownMenu',
+    component: DropDownMenu
+  },
+  {
+    path: '/fullscreenwrapper',
+    name: 'FullScreenWrapper',
+    component: FullscreenWrapper
+  },
+  {
   path: '/formulario',
   name: 'UnsavedChangedForm',
   component: UnsavedChangesForm
@@ -111,7 +115,27 @@ export const routes = [
     path: '/tab',
     name: 'tab',
     component: TabNavigator
-  }
+  },
+  {
+  path: '/clipboard-test',
+  name: 'ClipboardTest',
+  component: ClipboardTestView, 
+  },
+  {
+    path: '/radar',
+    name: 'RadarTest',
+    component: RadarTestView,
+  },
+  {
+  path: '/online-status-test',
+  name: 'OnlineStatusTest',
+  component: OnlineStatusTestView, 
+  },
+  {
+  path: '/browser-info-test',
+  name: 'BrowserInfoTest',
+  component: BrowserInfoTestView, 
+  },
 
 
 ];

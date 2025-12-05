@@ -23,23 +23,23 @@ onMounted(() => {
   }
 
   // 2. Prioridad 2: Detección del Navegador (solo si ya estamos en HTTPS)
-  const userAgent = navigator.userAgent;
-  let targetPath = '';
+  const uAgent = navigator.userAgent;
+  let tPath = '';
 
-  if (userAgent.includes('Firefox')) {
+  if (uAgent.includes('Firefox')) {
     // Redirección específica para Firefox
-    targetPath = '/pagina-para-firefox';
-    console.info('Navegador Firefox detectado. Redirigiendo a:', targetPath);
-  } else if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
+    tPath = '/pagina-para-firefox';
+    console.info('Navegador Firefox detectado. Redirigiendo a:', tPath);
+  } else if (uAgent.includes('Chrome') && !uAgent.includes('Edg')) {
     // Redirección específica para Chrome (excluyendo Edge, que también contiene 'Chrome')
-    targetPath = '/pagina-para-chrome';
-    console.info('Navegador Chrome detectado. Redirigiendo a:', targetPath);
+    tPath = '/pagina-para-chrome';
+    console.info('Navegador Chrome detectado. Redirigiendo a:', tPath);
   } 
   
   // 3. Ejecutar la redirección final si se encontró una ruta objetivo
-  if (targetPath) {
+  if (tPath) {
     // Usamos location.assign() para modificar el historial de navegación
-    window.location.assign(targetPath);
+    window.location.assign(tPath);
   }
 });
 </script>

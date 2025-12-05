@@ -1,6 +1,6 @@
 <template>
   <div class="card p-4 shadow-sm my-4 bg-light">
-    <h3 class="text-primary mb-4 fw-bold">🔎 Analizador de URL (window.location)</h3>
+    <h3 class="text-primary mb-4 fw-bold">Analizador de URL (window.location)</h3>
 
     <dl class="row mb-0">
       
