@@ -17,21 +17,21 @@ export default defineComponent({
   name: 'ScrollToTopButton',
   setup() {
     // Definición del umbral de píxeles para mostrar el botón
-    const SCROLL_THRESHOLD = 200;
+    const limiteBoton = 200;
 
     // 1. Ref para almacenar la posición actual del scroll vertical
-    const scrollY = ref(0);
+    const guardar = ref(0);
 
     // 2. Propiedad Computed para determinar la visibilidad
-    const isVisible = computed(() => {
+    const visibilidad = computed(() => {
       // El botón es visible si la posición es mayor que el umbral
-      return scrollY.value > SCROLL_THRESHOLD;
+      return guardar.value > limiteBoton;
     });
 
     // Función que actualiza el ref scrollY con la posición actual
     const handleScroll = () => {
       // window.scrollY es el valor estándar para la posición vertical del scroll
-      scrollY.value = window.scrollY;
+      guardar.value = window.scrollY;
     };
 
     // 3. Método para desplazar la vista hacia arriba
@@ -57,7 +57,7 @@ export default defineComponent({
     });
 
     return {
-      isVisible,
+      isVisible: visibilidad,
       scrollToTop,
     };
   },

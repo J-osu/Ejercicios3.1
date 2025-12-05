@@ -11,10 +11,10 @@ export function useLanguageRedirect() {
   
   onMounted(() => {
     // 1. Obtener la cadena de búsqueda actual (ej: ?lang=es&theme=dark)
-    const searchParams = new URLSearchParams(window.location.search);
+    const paramBusquedad = new URLSearchParams(window.location.search);
     
     // 2. Leer el valor del parámetro 'lang'
-    const lang = searchParams.get('lang');
+    const lang = paramBusquedad.get('lang');
     
     let targetUrl = '';
 

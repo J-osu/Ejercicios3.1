@@ -11,3 +11,13 @@ export interface CalendarDay {
     isCurrentMonth: boolean;
     events: CalendarEvent[];
 }
+
+export interface Coordinates {
+    latitude: number;
+    longitude: number;
+}
+
+export interface Friend extends Coordinates {
+    id: number;
+    name: string;
+}

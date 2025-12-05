@@ -3,9 +3,9 @@
     <!-- El estilo dinámico vincula el ancho al porcentaje de scrollProgress -->
     <div 
       class="progress-bar" 
-      :style="{ width: scrollProgress + '%' }"
+      :style="{ width: scrollProgresivo + '%' }"
       role="progressbar"
-      :aria-valuenow="scrollProgress"
+      :aria-valuenow="scrollProgresivo"
       aria-valuemin="0"
       aria-valuemax="100"
       aria-label="Progreso de lectura de la página"
@@ -17,49 +17,49 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 
 // 1. Ref para almacenar el porcentaje de scroll (0 a 100)
-const scrollProgress = ref(0);
+const scrollProgresivo = ref(0);
 
 // 2. Implementa la Lógica de Cálculo
-const updateScrollProgress = () => {
+const actualizarScroll = () => {
   // Altura Total del Contenido
-  const scrollHeight = document.documentElement.scrollHeight;
+  const alto = document.documentElement.scrollHeight;
   // Altura de la Ventana Visible
-  const clientHeight = document.documentElement.clientHeight;
+  const altura = document.documentElement.clientHeight;
   // Scroll Actual desde la parte superior
   const scrollActual = window.scrollY;
 
   // Distancia total que el usuario puede desplazar la página
-  const scrollableDistance = scrollHeight - clientHeight;
+  const scrollableLimite = alto - altura;
 
-  if (scrollableDistance > 0) {
+  if (scrollableLimite > 0) {
     // Fórmula para calcular el porcentaje
-    let progress = (scrollActual / scrollableDistance) * 100;
+    let progress = (scrollActual / scrollableLimite) * 100;
     
     // Aseguramos que el valor no sea mayor que 100 o menor que 0
     progress = Math.min(100, Math.max(0, progress));
     
     // Actualiza el ref reactivo
-    scrollProgress.value = progress;
+    scrollProgresivo.value = progress;
   } else {
     // Caso de páginas muy cortas: si no hay scroll, el progreso es 100%
-    scrollProgress.value = 100;
+    scrollProgresivo.value = 100;
   }
 };
 
 // 3. Vincula la Lógica a los Eventos del Navegador
 onMounted(() => {
   // Inicializar el valor al montar
-  updateScrollProgress();
+  actualizarScroll();
   // Conectar al evento 'scroll'
-  window.addEventListener('scroll', updateScrollProgress);
+  window.addEventListener('scroll', actualizarScroll);
   // También es útil conectarlo al resize, por si la altura de la ventana cambia.
-  window.addEventListener('resize', updateScrollProgress); 
+  window.addEventListener('resize', actualizarScroll); 
 });
 
 // 4. Limpieza crucial para evitar fugas de memoria
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateScrollProgress);
-  window.removeEventListener('resize', updateScrollProgress);
+  window.removeEventListener('scroll', actualizarScroll);
+  window.removeEventListener('resize', actualizarScroll);
 });
 </script>
 
