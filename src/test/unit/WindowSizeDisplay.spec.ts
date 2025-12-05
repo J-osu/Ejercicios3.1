@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { mount } from '@vue/test-utils';
 import { ref } from 'vue';
 import { describe, expect, test, vi } from 'vitest';
@@ -25,23 +24,19 @@ describe('WindowSizeDisplay.vue', () => {
   });
   
   test('El componente debe actualizarse reactivamente cuando cambian los valores', async () => {
-    // Remontamos el componente con nuevos valores
     mockWidth.value = 100;
     mockHeight.value = 100;
 
     const wrapper = mount(WindowSizeDisplay);
     await wrapper.vm.$nextTick();
 
-    // Verificar valor inicial
     expect(wrapper.find('p.lead').text()).toContain('Ancho: 100 px - Alto: 100 px');
 
-    // Cambiar los valores
     mockWidth.value = 1920;
     mockHeight.value = 1080;
     
     await wrapper.vm.$nextTick();
 
-    // Verificar que se actualizó
     expect(wrapper.find('p.lead').text()).toContain('Ancho: 1920 px - Alto: 1080 px');
   });
 });
