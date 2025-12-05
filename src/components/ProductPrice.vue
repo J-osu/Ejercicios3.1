@@ -4,8 +4,6 @@ import { computed } from 'vue';
 const crearFormateadorDivisas = () => {
     
     const formatearDivisa = (monto: number, localizacion: string, codigoDivisa: string): string => {
-        
-        // Esta comprobación sigue siendo importante para manejar valores no numéricos
         if (typeof monto !== 'number' || isNaN(monto)) {
             return 'Monto no válido'; 
         }

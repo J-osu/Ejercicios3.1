@@ -1,9 +1,4 @@
-// src/composables/useCurrencyFormatter.ts
 
-/**
- * Crea una función para formatear un número como divisa usando Intl.NumberFormat.
- * @returns { formatCurrency } La función de formateo.
- */
 export function useCurrencyFormatter() {
     
     const formatCurrency = (amount: number, locale: string, currencyCode: string): string => {
@@ -16,14 +11,12 @@ export function useCurrencyFormatter() {
             const options: Intl.NumberFormatOptions = {
                 style: 'currency',
                 currency: currencyCode,
-                // Por defecto, usamos 2 decimales para la mayoría de divisas
                 minimumFractionDigits: 2, 
             };
 
-            // Ajuste específico para divisas que no usan decimales (JPY, KRW, etc.)
             if (currencyCode === 'JPY') {
                 options.minimumFractionDigits = 0;
-                options.maximumFractionDigits = 0; // Importante para la coincidencia exacta
+                options.maximumFractionDigits = 0;
             }
             
             const formatter = new Intl.NumberFormat(locale, options);

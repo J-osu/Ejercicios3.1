@@ -10,6 +10,5 @@
 <script setup lang="ts">
 import { useOnlineStatus } from '../composables/useOnlineStatus';
 
-// Usar el composable para obtener el estado reactivo
 const { isOnline: encendido } = useOnlineStatus();
 </script>

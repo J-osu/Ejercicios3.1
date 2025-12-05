@@ -50,33 +50,25 @@ import { calculateDistance } from '../utils/distanceCalculator';
 import type { Friend } from '../types/index';
 import { friends as mockFriends, TEST_USER_LAT, TEST_USER_LON } from '../data/mockFriends';
 
-// Constante para el radio de proximidad (1 kilómetro)
 const radioProxKm = 1;
 
-// 1. Usar el composable de Geolocalización
 const { coords, error } = useGeolocation();
 
-// 2. Propiedad Computed para determinar la proximidad
 const amigosCerca = computed(() => {
-    // Si no tenemos coordenadas del usuario, no podemos calcular distancias
     if (!coords.value) {
         return [];
     }
 
     const usarCordenadas = coords.value;
     
-    // Filtramos la lista de amigos
     const cerca = mockFriends.map(friend => {
-        // Calcular la distancia entre el usuario y el amigo
         const lejos = calculateDistance(usarCordenadas, friend);
-        
-        // Devolvemos el amigo con la distancia añadida
         return {
             ...friend,
             distance: lejos,
             isNear: lejos <= radioProxKm,
         };
-    }).filter(friend => friend.isNear); // Solo mantenemos los que están cerca
+    }).filter(friend => friend.isNear);
 
     return cerca;
 });

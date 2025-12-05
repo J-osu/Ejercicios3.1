@@ -28,7 +28,6 @@
 <script setup lang="ts">
 import { reactive, onMounted } from 'vue';
 
-// 1. Interfaz de TypeScript para tipar las partes de la URL
 interface UrlParts {
   href: string;
   protocol: string;
@@ -38,7 +37,6 @@ interface UrlParts {
   search: string;
 }
 
-// 2. Objeto reactivo inicializado con valores vacíos
 const urlParts = reactive<UrlParts>({
   href: '',
   protocol: '',
@@ -48,9 +46,7 @@ const urlParts = reactive<UrlParts>({
   search: '',
 });
 
-// 3. onMounted: Asignar los valores de window.location
 onMounted(() => {
-  // Asignación de propiedades del objeto location al objeto reactivo
   urlParts.href = window.location.href;
   urlParts.protocol = window.location.protocol;
   urlParts.hostname = window.location.hostname;

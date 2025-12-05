@@ -1,4 +1,3 @@
-<!-- src/components/LanguageGuard.vue -->
 <template>
   <div class="p-4 text-center">
     <h3 class="text-primary">Guardia de Idioma Activa</h3>
@@ -9,6 +8,5 @@
 <script setup lang="ts">
 import { useLanguageRedirect } from '../composables/useLanguageRedirect';
 
-// Ejecutar la lógica del Composable al montar el componente
 useLanguageRedirect();
 </script>

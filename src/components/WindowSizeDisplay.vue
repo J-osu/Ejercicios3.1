@@ -13,15 +13,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useWindowSize } from '../composables/useWindowSize'; // Importamos nuestro composable
+import { useWindowSize } from '../composables/useWindowSize';
 
 export default defineComponent({
   name: 'WindowSizeDisplay',
   setup() {
-    // 1. Usar el composable y obtener las referencias reactivas
     const { width, height } = useWindowSize();
 
-    // 2. Retornar las referencias para que el template las use
     return {
       width,
       height,

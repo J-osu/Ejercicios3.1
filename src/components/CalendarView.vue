@@ -15,17 +15,13 @@ const cuadrillaCalendario = computed<CalendarDay[]>(() => {
     const cuadrilla: CalendarDay[] = [];
     const primerDiaDelMes = new Date(props.year, props.month, 1);
     const diasEnElMes = new Date(props.year, props.month + 1, 0).getDate();
-
-    // Determina el índice del primer día de la semana (Lunes=0, Domingo=6)
     const indicePrimerDiaDeSemana = (primerDiaDelMes.getDay() + 6) % 7;
 
     const diasMesAnteriorARellenar = indicePrimerDiaDeSemana;
 
-    // Obtener el día de inicio para el relleno del mes anterior
     const ultimoDiaMesAnterior = new Date(props.year, props.month, 0);
     const diaInicio = ultimoDiaMesAnterior.getDate() - diasMesAnteriorARellenar + 1;
 
-    // Relleno con días del mes anterior
     for (let i = 0; i < diasMesAnteriorARellenar; i++) {
         const fechaDia = new Date(props.year, props.month, diaInicio + i);
         cuadrilla.push({
@@ -34,8 +30,6 @@ const cuadrillaCalendario = computed<CalendarDay[]>(() => {
             events: [],
         });
     }
-
-    // Días del mes actual
     for (let i = 1; i <= diasEnElMes; i++) {
         const fechaDia = new Date(props.year, props.month, i);
         
@@ -47,8 +41,6 @@ const cuadrillaCalendario = computed<CalendarDay[]>(() => {
             events: eventosDia,
         });
     }
-
-    // Relleno con días del mes siguiente
     const diasParaRellenarAlFinal = 7 - (cuadrilla.length % 7);
     const cuentaRellenoFinal = (diasParaRellenarAlFinal === 7) ? 0 : diasParaRellenarAlFinal;
     
@@ -108,7 +100,6 @@ const tituloMes = computed(() => {
 </template>
 
 <style scoped>
-/* Estilos para el Calendario */
 .calendar-container {
     max-width: 900px;
     margin: 20px auto;
@@ -125,7 +116,6 @@ h2 {
     text-transform: capitalize;
 }
 
-/* 7 Columnas para la Cabecera y la Cuadrícula */
 .calendar-header, .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -140,7 +130,6 @@ h2 {
     border-bottom: 2px solid #007bff;
 }
 
-/* Celda de Día */
 .day-cell {
     border: 1px solid #eee;
     min-height: 100px;
@@ -157,7 +146,6 @@ h2 {
     margin-bottom: 5px;
 }
 
-/* Estilos Condicionales */
 .is-not-current-month {
     background-color: #f7f7f7;
     color: #aaa;
@@ -167,7 +155,6 @@ h2 {
     background-color: #e6ffec;
 }
 
-/* Eventos */
 .events-list {
     font-size: 0.75em;
     display: flex;

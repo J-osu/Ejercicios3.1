@@ -5,7 +5,6 @@ export interface CalendarEvent {
     type: 'busy' | 'tentative' | 'holiday';
 }
 
-// Interfaz para la celda de la cuadrícula
 export interface CalendarDay {
     date: Date;
     isCurrentMonth: boolean;
